@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center padding bottom-20">
                         <img src="{{asset('img/icons/job.png')}}" alt="oferta laboral" width="50px">
-                        <h2>Bolsa de Trabajo</h2>
+                        <h2>Bolsas de Trabajo</h2>
                     </div>
                 </div>
                 <div class="row">
