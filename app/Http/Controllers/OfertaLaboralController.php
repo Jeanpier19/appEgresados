@@ -284,7 +284,7 @@ class OfertaLaboralController extends Controller
         
         return response()->json(['documento' => asset('documents/OfertasLaborales/' . $nombre), 'success' => 'success']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Hubo un error al subir la imagen.'], 500);
+            return response()->json(['error' => 'Hubo un error al subir el documento.'], 500);
         }
     }
 
