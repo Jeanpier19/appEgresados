@@ -277,14 +277,15 @@ class OfertaLaboralController extends Controller
      */
     public function uploadFile(Request $request): JsonResponse
     {
+        try {
         $file = $request->file('file');
         $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
-        try {
-            Storage::disk('ofertaLaboralArchivos')->put($nombre, File::get($file));
+        $file->move(public_path('documents/OfertasLaborales'), $nombre);
+        
+        return response()->json(['documento' => asset('documents/OfertasLaborales/' . $nombre), 'success' => 'success']);
         } catch (\Exception $e) {
-
+            return response()->json(['error' => 'Hubo un error al subir la imagen.'], 500);
         }
-        return response()->json(['documento' => 'ofertaLaboralArchivos/' . $nombre, 'success' => 'success']);
     }
 
     /**
