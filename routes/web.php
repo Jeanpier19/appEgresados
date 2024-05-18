@@ -1,5 +1,6 @@
 <?php
 
+use App\Convenio;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
@@ -14,19 +15,6 @@ use Illuminate\Support\Facades\Artisan;
 | contains the "web" middleware group. Now create something great!
 |
 */
-    Auth::routes();
-    
-// Nuevas rutas api
-
-use App\Http\Controllers\ProfileController; // Asegúrate de importar el controlador adecuado.
-
-Route::get('/side-menu', [ProfileController::class, 'showProfile'])->name('side-menu'); // Asigna una ruta a tu vista.
-Route::get('/api',[App\Http\Controllers\ApiController::class,'index'])->name('api');
-Route::post('/api/escuela',[App\Http\Controllers\ApiController::class,'escuela'])->name('api.escuela');
-
-// Otras rutas y definiciones de rutas aquí.
-
-
 
 // RUTA CONTACTANOS - WELCOME PAGINA DE INICIO
 
@@ -34,45 +22,58 @@ Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
 
+Auth::routes();
+
+// Nuevas rutas api
+
+use App\Http\Controllers\ProfileController; // Asegúrate de importar el controlador adecuado.
+
+Route::get('/side-menu', [ProfileController::class, 'showProfile'])->name('side-menu'); // Asigna una ruta a tu vista.
+Route::get('/api', [App\Http\Controllers\ApiController::class, 'index'])->name('api');
+Route::post('/api/escuela', [App\Http\Controllers\ApiController::class, 'escuela'])->name('api.escuela');
+
 // BOLSA DE TRABAJO
 
 use App\OfertaLaboral;
+
 Route::get('/bolsa_trabajo', function () {
     $ofertas_laborales = OfertaLaboral::all(); // Recupera todas las ofertas laborales
     return view('bolsa_trabajo', ['ofertas_laborales' => $ofertas_laborales]);
-    })->name('bolsa_trabajo');
+})->name('bolsa_trabajo');
 
 // CAPACITACIONES
-    use App\OfertasCapacitaciones;
-    Route::get('/oferta_capacitaciones', function () {
+use App\OfertasCapacitaciones;
+Route::get('/oferta_capacitaciones', function () {
     $ofertas_capacitaciones = OfertasCapacitaciones::all(); // Recupera todas las ofertas laborales
     return view('oferta_capacitaciones', ['ofertas_capacitaciones' => $ofertas_capacitaciones]);
-    })->name('oferta_capacitaciones');
-
-// VISTA NUEVA
-    Route::get('/vista', function () {
-    return view('vista');
-    })->name('vista');
+})->name('oferta_capacitaciones');
 
 // CONVENIOS
-    use App\Http\Controllers\ConveniosController;
-    Route::get('/convenios', [ConveniosController::class, 'index'])->name('convenios.page');
+Route::get('/convenios', function () {
+    return view('convenios');
+})->name('conveniosPrincipal');
 
 // ENCUESTAS
-    use App\Encuesta; // Asegúrate de importar el modelo Encuesta
-    Route::get('/encuestas', function () {
-        $encuesta = Encuesta::first(); // Obtén la primera encuesta (ajusta esto según tu lógica)
-        return view('encuestas', compact('encuesta'));
-    })->name('encuestas');
-    
+use App\Encuesta; // Asegúrate de importar el modelo Encuesta
+Route::get('/encuestas', function () {
+    $encuesta = Encuesta::first(); // Obtén la primera encuesta (ajusta esto según tu lógica)
+    return view('encuestas', compact('encuesta'));
+})->name('encuestas');
+
+// CONTACTOS
+Route::get('/contactos', function () {
+    return view('contactos');
+})->name('contactos');
+
+
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/validar', 'ValidateController@validar')->name('validar');
 Route::post('/enviar/correo', 'ValidateController@send_email')->name('enviar.correo');
 Route::get('validate/create/user/{token}', 'ValidateController@createUser')->name('validate.createUser');
-    
+
 // Paginas
 Route::get('/', 'PageController@index')->name('welcome');
-Route::get('/convenios', 'PageController@convenios')->name('convenios.page');
+// Route::get('/convenios', 'PageController@convenios')->name('convenios.page');
 
 Route::post('mensajes', 'MessageController@store')->name('mensajes.store');
 
@@ -116,7 +117,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('respuestas/pregunta', 'RequestEncuestaController@respuestas_pregunta')->name('respuestas.pregunta');
 
         Route::resource('entidades', 'EntidadesController', ['parameters' => [
-            'entidades' => 'entidad']]);
+            'entidades' => 'entidad'
+        ]]);
         Route::post('entidades/all', 'EntidadesController@entidades_all')->name('entidades.all');
         Route::post('/entidades/image/upload', 'EntidadesController@uploadImage')->name('entidades.image.upload');
 
@@ -136,13 +138,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         Route::resource('ofertas_laborales', 'OfertaLaboralController', ['parameters' => [
-            'ofertas_laborales' => 'oferta_laboral']]);
+            'ofertas_laborales' => 'oferta_laboral'
+        ]]);
         Route::post('ofertas_laborales/all', 'OfertaLaboralController@ofertas_laborales_all')->name('ofertas_laborales.all');
         Route::post('/ofertas_laborales/file/upload', 'OfertaLaboralController@uploadFile')->name('ofertas_laborales.file.upload');
         Route::post('/ofertas_laborales/postular', 'OfertaLaboralController@postular')->name('ofertas_laborales.postular');
 
         Route::resource('postulaciones', 'PostulacionController', ['parameters' => [
-            'postulaciones' => 'postulacion']]);
+            'postulaciones' => 'postulacion'
+        ]]);
         Route::post('postulaciones/all', 'PostulacionController@postulaciones_all')->name('postulaciones.all');
         Route::post('/postulaciones/asignar', 'PostulacionController@asignar')->name('postulaciones.asignar');
 
@@ -163,7 +167,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/doctorado/get-doctorado-all', 'DoctoradoController@get_doctorado_all')->name('doctorado.get_doctorado_all');
 
         Route::resource('menciones', 'MencionController', ['parameters' => [
-            'menciones' => 'mencion']])->except(['show']);
+            'menciones' => 'mencion'
+        ]])->except(['show']);
         Route::post('/menciones/get-mencion-all', 'MencionController@get_mencion_all')->name('menciones.get_mencion_all');
 
         Route::resource('maestrias', 'MaestriaController')->except(['show']);
@@ -298,7 +303,6 @@ Route::group(['middleware' => ['auth']], function () {
 
                 Route::post('/experiencia-validar', 'ExperienciaLaboralController@validarExperiencia')->name('egresado.validar-experiencia');
                 Route::delete('/experiencia-invalidar', 'ExperienciaLaboralController@invalidarExperiencia')->name('egresado.invalidar-experiencia');
-
             });
 
             Route::group(['prefix' => 'documento'], function () {
@@ -353,9 +357,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::get('/get-file/{filename}', 'AlumnoOfertasCapacitacionController@getFile')->name('alumno_ofertas.show');
                 Route::post('/subir-certificado', 'AlumnoOfertasCapacitacionController@subirCertificado')->name('alumno_ofertas.subir-certificado');
                 Route::get('/get-certificado/{filename}', 'AlumnoOfertasCapacitacionController@getCertificado')->name('alumno_ofertas.get-certificado');
-
             });
-
         });
     });
 
@@ -377,16 +379,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post("/reporte4", 'ReportesController@Reporte4')->name('reportes.reporte4');
         Route::post("/reporte5", 'ReportesController@Reporte5')->name('reportes.reporte5');
         Route::post("/reporte6", 'ReportesController@Reporte6')->name('reportes.reporte6');
-
     });
 
     Route::group(["prefix" => 'capacitaciones'], function () {
         Route::get("/", 'CapacitacionesController@Index')->name('capacitaciones.index');
-
     });
     Route::group(["prefix" => 'experiencia'], function () {
         Route::get("/", 'ExperienciaLaboralController@Index')->name('experiencia.index');
-
     });
     Route::group(["prefix" => 'necesidad-capacitacion'], function () {
         Route::get("/", 'NecesidadCapacitacionesController@Index')->name('necesidad-capacitaciones.index');
@@ -395,7 +394,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post("/store-update", 'NecesidadCapacitacionesController@store')->name('necesidad-capacitaciones.store-update');
         Route::post("/get_data_necesidad", 'NecesidadCapacitacionesController@get_data_necesidad')->name('necesidad-capacitaciones.get_data_necesidad');
         Route::delete("/destroy", 'NecesidadCapacitacionesController@destroy')->name('necesidad-capacitaciones.destroy');
-
     });
 });
 
