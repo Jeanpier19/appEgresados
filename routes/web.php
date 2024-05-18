@@ -49,9 +49,7 @@ Route::get('/oferta_capacitaciones', function () {
 })->name('oferta_capacitaciones');
 
 // CONVENIOS
-Route::get('/convenios', function () {
-    return view('convenios');
-})->name('conveniosPrincipal');
+Route::get('/convenios', 'PageController@convenios')->name('convenios');
 
 // ENCUESTAS
 use App\Encuesta; // Asegúrate de importar el modelo Encuesta
@@ -73,7 +71,6 @@ Route::get('validate/create/user/{token}', 'ValidateController@createUser')->nam
 
 // Paginas
 Route::get('/', 'PageController@index')->name('welcome');
-// Route::get('/convenios', 'PageController@convenios')->name('convenios.page');
 
 Route::post('mensajes', 'MessageController@store')->name('mensajes.store');
 

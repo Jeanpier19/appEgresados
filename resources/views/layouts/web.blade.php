@@ -35,10 +35,6 @@
             color: #0a0a0a;
         }
 
-        .navbar-nav .nav-link {
-            font-weight: bold;
-        }
-
         .navbar-nav:hover .nav-link:hover {
             color: #3c49c5;
         }
@@ -68,7 +64,7 @@
                         </li>
                         <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('bolsa_trabajo') }}">Bolsa de Trabajo</a></li>
                         <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('oferta_capacitaciones') }}">Capacitaciones</a></li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('conveniosPrincipal') }}">Convenios</a></li>
+                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('convenios') }}">Convenios</a></li>
                         <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('encuestas') }}">Encuestas</a></li>
                         <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('contactos') }}">Contáctanos</a></li>
                     </ul>
