@@ -40,7 +40,7 @@ class ConveniosController extends Controller
         $tipo_convenio = TipoConvenio::all();
         return view('convenios.index', compact('tipo_convenio'));
     }
-
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -96,9 +96,9 @@ class ConveniosController extends Controller
      */
     public function edit(Convenio $convenio)
     {
-        $entidades = Entidad::all();
+        $entidades = Entidad::all(); //Obtiene todos los atributos de la tabla entidades
         $tipo_convenio = TipoConvenio::all();
-        return view('convenios.edit', compact('convenio', 'entidades', 'tipo_convenio'));
+        return view('convenios.edit', compact('convenios', 'entidades', 'tipo_convenio')); //Accedemos a los registros de la tabla entidades.
     }
 
     /**
@@ -212,7 +212,7 @@ class ConveniosController extends Controller
         <div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>
                                                 <a href='{$show}'  class='btn btn-primary'><i class='fa fa-search'></i></a>";
                 if ($convenio->documento) {
-                    $buttons = $buttons . "<a href='".asset($convenio->documento)."' class='btn btn-danger' target='_blank'><i class='fa fa-file-pdf-o'></i></a>";
+                    $buttons = $buttons . "<a href='" . asset($convenio->documento) . "' class='btn btn-danger' target='_blank'><i class='fa fa-file-pdf-o'></i></a>";
                 }
                 if (Auth::user()->hasPermissionTo('convenios-editar')) {
                     $buttons = $buttons . "<a href='{$edit}' class='btn btn-warning'><i class='fa fa-pencil-alt'></i></a>";
@@ -268,14 +268,14 @@ class ConveniosController extends Controller
      */
     public function uploadFile(Request $request): JsonResponse
     {
-        $file = $request->file('file');
-        $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
         try {
-            Storage::disk('conveniosArchivos')->put($nombre, File::get($file));
+            $file = $request->file('file');
+            $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('documents/conveniosArchivos'), $nombre);
+            return response()->json(['documentos' => asset('documents/conveniosArchivos/' . $nombre), 'success' => 'success']);
         } catch (\Exception $e) {
-
+            return response()->json(['Error' => 'Hubo un error al subir el documento', 500]);
         }
-        return response()->json(['documento' => 'conveniosArchivos/' . $nombre, 'success' => 'success']);
     }
 
     /**

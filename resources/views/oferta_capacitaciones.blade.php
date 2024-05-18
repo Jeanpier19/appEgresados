@@ -30,7 +30,7 @@
                                 <div class="blog-item-inner">
                                     <h3 class="blog-title"><a href="#">{{$ofertas->titulo}}</a></h3>
                                     <a href="#" class="blog-icons last"><i class="bi bi-card-text"></i> Precio
-                                        &#8212; @if($ofertas->precio == 0)Gratuito @else {{$ofertas->precio}} @endif</a>
+                                        &#8212; @if($ofertas->precio == 0)Gratuito @else S/.{{$ofertas->precio}} @endif</a>
                                     <p>{{$ofertas->oferta_descripcion}}</p>
                                     <div class="students"># Alumnos:
                                         @if ($ofertas->total_alumnos)

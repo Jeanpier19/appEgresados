@@ -205,15 +205,22 @@ class EntidadesController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function uploadImage(Request $request)
-    {
-        $file = $request->file('file');
-        $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
-        try {
-            Storage::disk('empresasLogos')->put($nombre, File::get($file));
-        } catch (\Exception $e) {
 
+    public function uploadImage(Request $request): JsonResponse
+    {
+        try {
+            $file = $request->file('file');
+            $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
+
+            // Mueve el archivo directamente a la carpeta public/img
+            $file->move(public_path('img/empresasLogos'), $nombre);
+
+            // Devuelve la URL completa de la imagen para su uso posterior
+            return response()->json(['imagen' => asset('img/empresasLogos/' . $nombre), 'success' => 'success']);
+        } catch (\Exception $e) {
+            // Manejar cualquier excepción que pueda ocurrir durante el proceso
+            // Puedes agregar un registro de error o un mensaje de error aquí si es necesario
+            return response()->json(['error' => 'Hubo un error al subir la imagen.'], 500);
         }
-        return response()->json(['logo' => 'empresasLogos/' . $nombre, 'success' => 'success']);
     }
 }

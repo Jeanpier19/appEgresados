@@ -9,6 +9,7 @@ use App\OfertasCapacitaciones;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
@@ -401,20 +402,22 @@ class OfertasCapacitacionesController extends Controller
         ]);
     }
 
-    public function uploadImage(Request $request)
+    public function uploadImage(Request $request): JsonResponse
     {
-        $file = $request->file('file');
-        if ($file) {
-            $file_path = time() . $file->getClientOriginalName();
-            try {
-                Storage::disk('recomendacionEvidencia')->put($file_path, File::get($file));
-            } catch (Exception $e) {
-            }
-            //$image-> store($image_path,'escuelaLogos');
-        } else {
-            $file_path = null;
+        try {
+            $file = $request->file('file');
+            $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
+    
+            // Mueve el archivo directamente a la carpeta public/img
+            $file->move(public_path('img/recomendacionEvidencia'), $nombre);
+    
+            // Devuelve la URL completa de la imagen para su uso posterior
+            return response()->json(['logo' => asset('img/recomendacionEvidencia/' . $nombre), 'success' => 'success']);
+        } catch (\Exception $e) {
+            // Manejar cualquier excepción que pueda ocurrir durante el proceso
+            // Puedes agregar un registro de error o un mensaje de error aquí si es necesario
+            return response()->json(['error' => 'Hubo un error al subir la imagen.'], 500);
         }
-        return response()->json(['logo' => 'recomendacionEvidencia/' . $file_path, 'success' => 'success']);
     }
 
     public function sendCorreoRecomendacion(Request $request)

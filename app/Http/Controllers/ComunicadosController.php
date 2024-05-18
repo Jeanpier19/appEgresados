@@ -186,7 +186,7 @@ class ComunicadosController extends Controller
                 $nestedData['id'] = $comunicado->id;
                 $nestedData['titulo'] = $comunicado->titulo;
                 $nestedData['descripcion'] = $comunicado->descripcion;
-                /*$nestedData['descripcion'] = substr($comunicado->descripcion, 0, 100) . "... " . "<a href='{$show}'>Ver más</a>";*/
+                // $nestedData['descripcion'] = substr($comunicado->descripcion, 0, 100) . "... " . "<a href='{$show}'>Ver más</a>";
                 $nestedData['fecha_fin'] = $comunicado->fecha_fin;
                 $nestedData['estado'] = $estado;
                 $nestedData['options'] = "<div><form action='$destroy' method='POST'>" . $buttons . "</form></div>";
