@@ -86,7 +86,7 @@
     <main>
 
         @yield('content')
-        <div class="footer">
+        <div class="footer" style="background: #fff">
             <div class="container">
                 <div class="row">
                     <div class="col-md-7">
@@ -94,7 +94,7 @@
                     </div>
                     <div class="col-md-5">
                         <ul class="footer_social">
-                            <li style="color: white;">Síguenos:</li>
+                            <li style="color: #000;">Síguenos:</li>
                             <li><a href="https://twitter.com/DsceUnasam96090/" class="twitter" target="_blank"><i
                                         class="bi bi-twitter"></i></a></li>
                             <li><a href="https://www.instagram.com/dscegresados/"class="instagram" target="_blank"><i
@@ -103,6 +103,12 @@
                                     target="_blank"><i class="bi bi-facebook"></i></a></li>
                             <li><a href="https://www.youtube.com/channel/UCP89yg9JPKA3Gy0rpuuAn9A/" class="youtube"
                                     target="_blank"><i class="bi bi-youtube"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12">
+                        <ul class="text-left">
+                            <li>Contáctanos:</li>
+                            <li><img src="{{asset('img/Iconos/contacts.png')}}" style="height: 25px"> <a style="color: #3d59d3;" href="{{route('contactos')}}">Envía tus comentarios aquí</a></li>
                         </ul>
                     </div>
                 </div>

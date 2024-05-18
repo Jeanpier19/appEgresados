@@ -1,7 +1,7 @@
 @extends('layouts.web')
 @section('content')
-    <section class="section-white" id="contactanos">
-        <div class="container">
+    <section class="section-white" style="background: #f5f7fc;" id="contactanos">
+        <div class="container"  style="margin-top: 70px;">
             <div class="row">
                 <div class="col-md-6">
                     <img src="{{ asset('img/icons/contact-form.png') }}" alt="contactanos" width="50px">
