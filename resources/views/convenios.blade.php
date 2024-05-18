@@ -10,7 +10,6 @@
                 </div>
             </div>
             <div class="row justify-content-center">
-                <img src="{{ asset($entidades->logo) }}" alt="pic" height="120px">
                 @if (count($convenios) > 0)
                     @foreach ($convenios as $index => $convenio)
                         <div class="col-md-3 col-xs-6">
