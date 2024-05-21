@@ -229,7 +229,7 @@
                 <!-- Botones de navegación personalizados con espacio vertical -->
                 <div class="row m-5">
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-circular" onclick="$('#carouselComunicados').carousel('prev')">
+                        <button class="btn btn-circular btn-primary" onclick="$('#carouselComunicados').carousel('prev')">
                             &lt; <!-- Símbolo de menor: < -->
                         </button>
 
@@ -247,7 +247,7 @@
                         </div>
                         <!-- end botones numerados -->
 
-                        <button class="btn btn-circular" onclick="$('#carouselComunicados').carousel('next')">
+                        <button class="btn btn-circular btn-primary" onclick="$('#carouselComunicados').carousel('next')">
                             &gt; <!-- Símbolo de mayor: > -->
                         </button>
                     </div>
