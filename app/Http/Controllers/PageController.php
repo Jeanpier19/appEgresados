@@ -10,6 +10,8 @@ use App\OfertaLaboral;
 use App\OfertasCapacitaciones;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Carbon\Carbon;
+
 
 class PageController extends Controller
 {
@@ -46,7 +48,9 @@ class PageController extends Controller
         $cantidad_doctores = Alumno::join('condicion_alumnos', 'condicion_alumnos.alumno_id', 'alumno.id')
             ->where('condicion_alumnos.condicion_id', 6)->count();
 
-        $comunicados = Comunicado::all();
+        $startDate = Carbon::now()->toDateString(); // Fecha actual
+        $endDate = Carbon::now()->addDays(30)->toDateString(); // Aumentarle 30 días
+        $comunicados = Comunicado::whereBetween('fecha_fin',[$startDate, $endDate])->OrderBy('id','desc')->get();
 
         return view('welcome', compact('encuesta', 'ofertas_laborales', 'ofertas_capacitaciones', 'convenios','convenios_total','cantidad_egresados','cantidad_graduados','cantidad_titulados','cantidad_magisteres','cantidad_doctores','comunicados'));
     }
