@@ -36,7 +36,8 @@ class OfertaLaboralController extends Controller
      */
     public function index()
     {
-        return view('oferta_laboral.index');
+        $ofertas = OfertaLaboral::orderBy('fecha_contratacion','desc')->get();
+        return view('oferta_laboral.index', compact('ofertas'));
     }
 
     /**
