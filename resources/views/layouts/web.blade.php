@@ -15,13 +15,14 @@
 
     <!-- Loading Bootstrap -->
     <link href="{{ asset('web/css/bootstrap.min.css') }}" rel="stylesheet">
+    @yield('css')
 
     <!-- Loading Template CSS -->
     <link href="{{ asset('web/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('web/css/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('web/css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('web/css/style-magnific-popup.css') }}" rel="stylesheet">
-
+    <script src="{{ asset('web/js/bootstrap.min.js') }}"></script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com/">
     <link
@@ -59,14 +60,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarScroll">
                     <!-- begin navbar-nav -->
-                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll justify-content-center">
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('welcome') }}">Inicio</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('bolsa_trabajo') }}">Bolsa de Trabajo</a></li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('oferta_capacitaciones') }}">Capacitaciones</a></li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('convenios') }}">Convenios</a></li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('encuestas') }}">Encuestas</a></li>
-                        <li class="nav-item"><a class="nav-link custom-bold" href="{{ route('contactos') }}">Contáctanos</a></li>
+                    <ul class="navbar-expand d-flex m-2">
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('welcome') }}">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('bolsa_trabajo') }}">Bolsa de Trabajo</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('oferta_capacitaciones') }}">Capacitaciones</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('convenios') }}">Convenios</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('encuestas') }}">Encuestas</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" style="font-size: 15px;" href="{{ route('contactos') }}">Contáctanos</a></li>
                     </ul>
 
                     <div class="d-flex">
