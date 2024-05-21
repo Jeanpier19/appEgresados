@@ -179,7 +179,7 @@
                 </div>
             </div>
             <!--begin row -->
-            @if (count($comunicados) > 0)
+            @if ((count($comunicados) > 0))
                 <div class="row">
                     <!--begin col md 12 -->
                     <div class="col-md-12 mx-auto padding-top-10">
