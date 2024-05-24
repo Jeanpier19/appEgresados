@@ -1,8 +1,6 @@
 @extends('layouts.web')
 
 @section('css')
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> --}}
     <style>
         .carousel-item {
             transition: transform 1s ease;
@@ -15,46 +13,54 @@
         .carousel-item.right {
             transform: translateX(100%);
         }
-        
 
-        /* Estilo para limitar el ancho máximo del carrusel */
-        #carouselExampleCaptions {
-            max-width: 1024px;
-            /* Establecer el ancho máximo del carrusel */
-            margin: 0 auto;
-            /* Centrar el carrusel en la página */
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
         }
 
-        /* Estilo para limitar el ancho máximo de las imágenes del carrusel */
-        #carouselExampleCaptions .carousel-item img {
-            max-width: 100%;
-            /* Establecer el ancho máximo de las imágenes */
+        .carousel-item {
+            position: relative;
+        }
+
+        .carousel-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/logoPrincipalBanner/imagen.jpg');
+            /* Reemplaza 'ruta/de/tu/imagen.jpg' con la ruta de tu imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
         }
     </style>
 @endsection
 
 @section('content')
     <!-- Banner -->
-    <section id="Home" class="home-section" id="home">
+    {{-- <section id="Home" class="home-section" id="home">
         <div class="home-section-overlay"></div>
-        <div class="container home-wrapper">
-            <!--begin row -->
-            <div class="row align-items-center">
-                <!--begin col-md-8-->
-                <div class="col-md-8 mx-auto text-center">
+        <div class="container home-wrapper"> --}}
+    <!--begin row -->
+    {{-- <div class="row align-items-center"> --}}
+    <!--begin col-md-8-->
+    {{-- <div class="col-md-8 mx-auto text-center">
                     <h1>Bienvenido</h1>
                     <p class="hero-text"></p>
                     <a href="#about" class="arrow-down scrool"><i class="bi bi-chevron-double-down"></i></a>
-                </div>
-                <!--end col-md-8-->
-            </div>
-            <!--end row -->
-        </div>
-    </section>
+                </div> --}}
+    <!--end col-md-8-->
+    {{-- </div> --}}
+    <!--end row -->
+    {{-- </div> --}}
+    {{-- </section> --}}
     {{-- Carousel --}}
-    <section class="carouselTamanio">
+    <section class="carousel-container">
         <div id="carouselExampleCaptions" class="carousel slide">
-            <div class="carousel-indicators">
+            <div class="carousel-indicators d-none">
                 @foreach ($carousel as $key => $slide)
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $key }}"
                         class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}"
@@ -64,7 +70,8 @@
             <div class="carousel-inner">
                 @forelse ($carousel as $slide)
                     <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                        <img src="/banner/{{ $slide->imagen }}" class="d-block w-100 h-20" style="max-width: 1024px; max-height: 600px; object-fit:cover;" alt="{{ $slide->nombre }}">
+                        <img src="/banner/{{ $slide->imagen }}" class="d-block w-100"
+                            style="max-height: 70vh; object-fit: contain;" alt="{{ $slide->nombre }}">
                         <div class="carousel-caption d-none d-md-block">
                             <h5 class="text-white">{{ $slide->nombre }}</h5>
                         </div>
@@ -211,8 +218,7 @@
 
                     <i class="bi bi-award-fill"></i>
 
-                    <p class="fun-facts-title"><span
-                            class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
+                    <p class="fun-facts-title"><span class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
                     </p>
 
                 </div>
@@ -256,7 +262,7 @@
                             <!-- Contenido del carrusel -->
                             <div class="carousel-inner">
                                 @foreach ($comunicados as $index => $comunicado)
-                                    <div class="carousel-item @if ($index === 0) active @endif">
+                                    <div class="carousel-item items @if ($index === 0) active @endif">
                                         <div class="row align-items-center testim-inner"
                                             style="max-width: 1500px; margin: 0 auto;">
                                             <div class="col-md-6">
@@ -360,7 +366,7 @@
             font-size: 18px;
         }
 
-        .carousel-item img {
+        .items img {
             max-width: 100%;
             height: auto;
         }
@@ -375,12 +381,19 @@
             border-radius: 5px;
         }
 
-        .carousel-indicators button {
-            background-color: #007bff;
-        }
-
         .bi-caret-right-fill {
             font-size: 2rem;
+        }
+
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-item img {
+            height: 70vh;
+            /* ajusta este valor según lo que necesites */
+            object-fit: cover;
         }
     </style>
 @endsection
