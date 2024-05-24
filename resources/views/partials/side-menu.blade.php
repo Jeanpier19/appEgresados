@@ -76,6 +76,12 @@
                         <span class="lbl">Comunicados</span>
                     </a>
                 </li>
+                <li class="blue-dark">
+                    <a href="{{ route('banners.index') }}">
+                        <i class="font-icon font-icon-dashboard {{ request()->is('banners') ? 'active' : '' }}"></i>
+                        <span class="lbl">Banners</span>
+                    </a>
+                </li>
                 <header class="side-menu-title">Administración</header>
                 <li class="blue-dark with-sub"><span>
                         <i class="font-icon font-icon-dashboard {{ request()->is('entidades*') ? 'active' : '' }}"></i>

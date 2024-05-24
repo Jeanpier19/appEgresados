@@ -69,6 +69,13 @@ Route::post('/validar', 'ValidateController@validar')->name('validar');
 Route::post('/enviar/correo', 'ValidateController@send_email')->name('enviar.correo');
 Route::get('validate/create/user/{token}', 'ValidateController@createUser')->name('validate.createUser');
 
+
+// CRUD Banners:
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('banners', 'BannerController')->names('banners');
+});
+
+
 // Paginas
 Route::get('/', 'PageController@index')->name('welcome');
 
