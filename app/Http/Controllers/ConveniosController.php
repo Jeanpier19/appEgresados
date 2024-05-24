@@ -37,10 +37,13 @@ class ConveniosController extends Controller
      */
     public function index()
     {
+        $convenios = Convenio::all(); // o cualquier consulta que necesites
+
         $tipo_convenio = TipoConvenio::all();
-        return view('convenios.index', compact('tipo_convenio'));
+
+        return view('convenios.index', compact('convenios', 'tipo_convenio'));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -96,9 +99,9 @@ class ConveniosController extends Controller
      */
     public function edit(Convenio $convenio)
     {
-        $entidades = Entidad::all(); //Obtiene todos los atributos de la tabla entidades
+        $entidades = Entidad::all();
         $tipo_convenio = TipoConvenio::all();
-        return view('convenios.edit', compact('convenios', 'entidades', 'tipo_convenio')); //Accedemos a los registros de la tabla entidades.
+        return view('convenios.edit', compact('convenio', 'entidades', 'tipo_convenio'));
     }
 
     /**
