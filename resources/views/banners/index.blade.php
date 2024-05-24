@@ -40,7 +40,7 @@
                                 <td class="text-center align-middle">{{ $banner->fecha_fin ? $banner->fecha_fin : '-' }}
                                 </td>
                                 <td class="text-center align-middle"><span
-                                        class="btn btn-rounded {{ $banner->temporal->tempo === 'Permanente' ? 'btn btn-success' : 'btn btn-danger' }}">{{ $banner->temporal ? $banner->temporal->tempo : 'Sin temporalidad' }}</span>
+                                        class=" {{ $banner->temporal->tempo === 'Permanente' ? 'bg bg-success' : 'bg bg-danger' }}" style="padding: 4px; border-radius: 5px;">{{ $banner->temporal ? $banner->temporal->tempo : 'Sin temporalidad' }}</span>
                                 </td>
                                 <td class="text-center">
                                     <form action="{{ route('banners.destroy', $banner->id) }}" class="formulario-eliminar"

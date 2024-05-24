@@ -1,4 +1,38 @@
 @extends('layouts.web')
+
+@section('css')
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> --}}
+    <style>
+        .carousel-item {
+            transition: transform 1s ease;
+        }
+
+        .carousel-item.left {
+            transform: translateX(-100%);
+        }
+
+        .carousel-item.right {
+            transform: translateX(100%);
+        }
+        
+
+        /* Estilo para limitar el ancho máximo del carrusel */
+        #carouselExampleCaptions {
+            max-width: 1024px;
+            /* Establecer el ancho máximo del carrusel */
+            margin: 0 auto;
+            /* Centrar el carrusel en la página */
+        }
+
+        /* Estilo para limitar el ancho máximo de las imágenes del carrusel */
+        #carouselExampleCaptions .carousel-item img {
+            max-width: 100%;
+            /* Establecer el ancho máximo de las imágenes */
+        }
+    </style>
+@endsection
+
 @section('content')
     <!-- Banner -->
     <section id="Home" class="home-section" id="home">
@@ -15,6 +49,39 @@
                 <!--end col-md-8-->
             </div>
             <!--end row -->
+        </div>
+    </section>
+    {{-- Carousel --}}
+    <section class="carouselTamanio">
+        <div id="carouselExampleCaptions" class="carousel slide">
+            <div class="carousel-indicators">
+                @foreach ($carousel as $key => $slide)
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $key }}"
+                        class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}"
+                        aria-label="Slide {{ $key + 1 }}"></button>
+                @endforeach
+            </div>
+            <div class="carousel-inner">
+                @forelse ($carousel as $slide)
+                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                        <img src="/banner/{{ $slide->imagen }}" class="d-block w-100 h-20" style="max-width: 1024px; max-height: 600px; object-fit:cover;" alt="{{ $slide->nombre }}">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5 class="text-white">{{ $slide->nombre }}</h5>
+                        </div>
+                    </div>
+                @empty
+                @endforelse
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </section>
     <!-- Nosotros -->
@@ -144,7 +211,8 @@
 
                     <i class="bi bi-award-fill"></i>
 
-                    <p class="fun-facts-title"><span class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
+                    <p class="fun-facts-title"><span
+                            class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
                     </p>
 
                 </div>
@@ -179,7 +247,7 @@
                 </div>
             </div>
             <!--begin row -->
-            @if ((count($comunicados) > 0))
+            @if (count($comunicados) > 0)
                 <div class="row">
                     <!--begin col md 12 -->
                     <div class="col-md-12 mx-auto padding-top-10">

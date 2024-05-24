@@ -8,6 +8,7 @@ use App\Encuesta;
 use App\Models\Alumno;
 use App\OfertaLaboral;
 use App\OfertasCapacitaciones;
+use App\Banner;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Carbon\Carbon;
@@ -52,7 +53,9 @@ class PageController extends Controller
         $endDate = Carbon::now()->addDays(30)->toDateString(); // Aumentarle 30 días
         $comunicados = Comunicado::whereBetween('fecha_fin',[$startDate, $endDate])->OrderBy('id','desc')->get();
 
-        return view('welcome', compact('encuesta', 'ofertas_laborales', 'ofertas_capacitaciones', 'convenios','convenios_total','cantidad_egresados','cantidad_graduados','cantidad_titulados','cantidad_magisteres','cantidad_doctores','comunicados'));
+        $carousel = Banner::orderBy('id','DESC')->take(3)->get(); // Mostrar registros de carrusel
+
+        return view('welcome', compact('carousel','encuesta', 'ofertas_laborales', 'ofertas_capacitaciones', 'convenios','convenios_total','cantidad_egresados','cantidad_graduados','cantidad_titulados','cantidad_magisteres','cantidad_doctores','comunicados'));
     }
 
     /**
