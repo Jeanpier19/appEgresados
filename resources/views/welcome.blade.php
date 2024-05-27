@@ -19,22 +19,16 @@
             overflow: hidden;
         }
 
-        .carousel-item {
-            position: relative;
-        }
-
         .carousel-principal {
             width: 100%;
             height: 700px;
-        }
-
-        .carousel-principal {
             display: flex;
-            justify-content: center;
             align-items: center;
         }
 
-        /* .carousel-principal .carousel-inner */
+        .carousel-principal .carousel-item img {
+            margin: auto 30%;
+        }
 
         .carousel-principal::before {
             content: "";
@@ -81,15 +75,13 @@
                 @endforeach
             </div>
             <div class="carousel-principal">
-                <div class="carousel-inner">
-                    @forelse ($carousel as $slide)
-                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
-                                style="max-height: 400px; object-fit: contain;" alt="{{ $slide->nombre }}">
-                        </div>
-                    @empty
-                    @endforelse
-                </div>
+                @forelse ($carousel as $slide)
+                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                        <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
+                            style="max-height: 400px; object-fit: contain;" alt="{{ $slide->nombre }}">
+                    </div>
+                @empty
+                @endforelse
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
                 data-bs-slide="prev">
