@@ -53,6 +53,13 @@ class PageController extends Controller
         $endDate = Carbon::now()->addDays(30)->toDateString(); // Aumentarle 30 días
         $comunicados = Comunicado::whereBetween('fecha_fin',[$startDate, $endDate])->OrderBy('id','desc')->get();
 
+        if ($carousel = Banner::where('tempo_id','1')) {
+            # code...
+        } else {
+            # code...
+        }
+        
+
         $carousel = Banner::whereBetween('fecha_fin',[$startDate, $endDate])->orderBy('id','desc')->take(4)->get(); // Mostrar registros de carrusel
 
         return view('welcome', compact('carousel','encuesta', 'ofertas_laborales', 'ofertas_capacitaciones', 'convenios','convenios_total','cantidad_egresados','cantidad_graduados','cantidad_titulados','cantidad_magisteres','cantidad_doctores','comunicados'));

@@ -23,13 +23,26 @@
             position: relative;
         }
 
-        .carousel-item::before {
+        .carousel-principal {
+            width: 100%;
+            height: 700px;
+        }
+
+        .carousel-principal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* .carousel-principal .carousel-inner */
+
+        .carousel-principal::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 700px;
             background-image: url('img/logoPrincipalBanner/imagen.jpg');
             /* Reemplaza 'ruta/de/tu/imagen.jpg' con la ruta de tu imagen de fondo */
             background-size: cover;
@@ -67,17 +80,16 @@
                         aria-label="Slide {{ $key + 1 }}"></button>
                 @endforeach
             </div>
-            <div class="carousel-inner">
-                @forelse ($carousel as $slide)
-                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                        <img src="/banner/{{ $slide->imagen }}" class="d-block w-100"
-                            style="max-height: 70vh; object-fit: contain;" alt="{{ $slide->nombre }}">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5 class="text-white">{{ $slide->nombre }}</h5>
+            <div class="carousel-principal">
+                <div class="carousel-inner">
+                    @forelse ($carousel as $slide)
+                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                            <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
+                                style="max-height: 400px; object-fit: contain;" alt="{{ $slide->nombre }}">
                         </div>
-                    </div>
-                @empty
-                @endforelse
+                    @empty
+                    @endforelse
+                </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
                 data-bs-slide="prev">
@@ -391,7 +403,7 @@
         }
 
         .carousel-item img {
-            height: 70vh;
+            height: 75vh;
             /* ajusta este valor según lo que necesites */
             object-fit: cover;
         }
