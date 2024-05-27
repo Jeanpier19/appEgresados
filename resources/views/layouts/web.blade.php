@@ -108,7 +108,7 @@
                     <div class="col-12">
                         <ul class="text-left">
                             <li>Contáctanos:</li>
-                            <li><img src="{{asset('img/Iconos/contacts.png')}}" style="height: 25px"> <a style="color: #3d59d3;" href="{{route('contactos')}}">Envía tus comentarios aquí</a></li>
+                            <li><img src="{{asset('img/icons/contacts.png')}}" style="height: 25px"> <a style="color: #3d59d3;" href="{{route('contactos')}}">Envía tus comentarios aquí</a></li>
                         </ul>
                     </div>
                 </div>
