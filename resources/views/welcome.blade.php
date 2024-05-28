@@ -14,20 +14,9 @@
             transform: translateX(100%);
         }
 
-        .carousel-container {
-            width: 100%;
-            overflow: hidden;
-        }
-
         .carousel-principal {
-            width: 100%;
-            height: 700px;
-            display: flex;
-            align-items: center;
-        }
-
-        .carousel-principal .carousel-item img {
-            margin: auto 30%;
+            padding-top: 130px;
+            padding-bottom: 25px;
         }
 
         .carousel-principal::before {
@@ -36,7 +25,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 700px;
+            height: 800px;
             background-image: url('img/logoPrincipalBanner/imagen.jpg');
             /* Reemplaza 'ruta/de/tu/imagen.jpg' con la ruta de tu imagen de fondo */
             background-size: cover;
@@ -66,35 +55,37 @@
     {{-- </section> --}}
     {{-- Carousel --}}
     <section class="carousel-container">
-        <div id="carouselExampleCaptions" class="carousel slide">
-            <div class="carousel-indicators d-none">
-                @foreach ($carousel as $key => $slide)
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $key }}"
-                        class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}"
-                        aria-label="Slide {{ $key + 1 }}"></button>
-                @endforeach
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner d-flex justify-content-center">
+                <div class="carousel-indicators d-none">
+                    @foreach ($carousel as $key => $slide)
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $key }}"
+                            class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}"
+                            aria-label="Slide {{ $key + 1 }}"></button>
+                    @endforeach
+                </div>
+                <div class="carousel-principal">
+                    @forelse ($carousel as $slide)
+                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                            <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
+                                style="max-height: 490px; object-fit: contain;" alt="{{ $slide->nombre }}">
+                        </div>
+                    @empty
+                        <h1 class="text-white mx-5 px-5">No hay banners</h1>
+                    @endforelse
+                </div>
             </div>
-            <div class="carousel-principal">
-                @forelse ($carousel as $slide)
-                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                        <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
-                            style="max-height: 400px; object-fit: contain;" alt="{{ $slide->nombre }}">
-                    </div>
-                @empty
-                @endforelse
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-                data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-                data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
     </section>
+
     <!-- Nosotros -->
     <section class="section-grey" id="about">
         <!--begin container -->
@@ -392,12 +383,6 @@
         .carousel-container {
             width: 100%;
             overflow: hidden;
-        }
-
-        .carousel-item img {
-            height: 75vh;
-            /* ajusta este valor según lo que necesites */
-            object-fit: cover;
         }
     </style>
 @endsection

@@ -106,7 +106,7 @@ class BannerController extends Controller
             unset($bann['imagen']); //Eliminar la variable
         }
         $banner->update($bann); //Obtenemos todos los datos de ese id
-        return redirect()->route('banners.index', compact('bann'))->with('modicate', 'Modificado');
+        return redirect()->route('banners.index', compact('banner'))->with('modicate', 'Modifica');
     }
 
     /**

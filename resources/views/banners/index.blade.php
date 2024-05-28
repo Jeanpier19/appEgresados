@@ -114,12 +114,16 @@
         </script>
     @endif
 
-    @if (session('modificate') == 'Modificado')
+    @if (session('modificate') == 'Modifica')
         <script>
             Swal.fire({
-                title: "Modificado!",
-                text: "Producto modificado con exito.",
-                icon: "success"
+                position: 'top-end',
+                text: "Banner modificado con exito.",
+                showConfirmButton: false,
+                timer: 3500,
+                width: 300, // Ancho del pop-up en píxeles
+                height: 40, // Desactiva el ajuste automático de altura para permitir un pop-up más pequeño
+                backdrop: false // Desactiva el fondo oscuro
             });
         </script>
     @endif
@@ -127,9 +131,13 @@
     @if (session('Eliminar') == 'Ok')
         <script>
             Swal.fire({
-                title: "¡Eliminado!",
-                text: "Tú registro fue eliminado correctamente.",
-                icon: "success"
+                position: 'top-end',
+                text: "Banner eliminado con exito.",
+                showConfirmButton: false,
+                timer: 3500,
+                width: 300, // Ancho del pop-up en píxeles
+                height: 40, // Desactiva el ajuste automático de altura para permitir un pop-up más pequeño
+                backdrop: false // Desactiva el fondo oscuro
             });
         </script>
     @endif
