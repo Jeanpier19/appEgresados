@@ -213,10 +213,10 @@ class EntidadesController extends Controller
             $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
 
             // Mueve el archivo directamente a la carpeta public/img
-            $file->move(public_path('img/empresasLogos'), $nombre);
+            $file->move(public_path('empresasLogos'), $nombre);
 
             // Devuelve la URL completa de la imagen para su uso posterior
-            return response()->json(['imagen' => asset('img/empresasLogos/' . $nombre), 'success' => 'success']);
+            return response()->json(['imagen' => asset('empresasLogos' . $nombre), 'success' => 'success']);
         } catch (\Exception $e) {
             // Manejar cualquier excepción que pueda ocurrir durante el proceso
             // Puedes agregar un registro de error o un mensaje de error aquí si es necesario
