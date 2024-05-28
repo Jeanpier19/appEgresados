@@ -24,18 +24,18 @@ class PageController extends Controller
     public function index()
     {
         $encuesta = Encuesta::where('estado', 1)->first();
-        $ofertas_laborales = OfertaLaboral::where('estado', 1)
-            ->join('entidades', 'ofertas_laborales.entidad_id', 'entidades.id')
-            ->join('tipo_contrato', 'ofertas_laborales.tipo_contrato_id', 'tipo_contrato.id')
-            ->join('escuela', 'ofertas_laborales.area', 'escuela.id')
-            ->select('ofertas_laborales.*', 'entidades.nombre as entidad', 'tipo_contrato.descripcion as tipo', 'escuela.nombre as area')->get();
-        $ofertas_capacitaciones = OfertasCapacitaciones::join('curso', 'curso.id', 'ofertas_capacitaciones.curso_id')
-            ->join('entidades', 'entidades.id', '=', 'curso.entidad_id')
-            ->select('ofertas_capacitaciones.id as idoferta', 'ofertas_capacitaciones.imagen as imagen', 'curso.titulo as titulo', 'ofertas_capacitaciones.precio as precio', 'ofertas_capacitaciones.total_alumnos as total_alumnos', 'entidades.nombre as entidad', 'ofertas_capacitaciones.oferta_descripcion as oferta_descripcion', 'ofertas_capacitaciones.fecha_inicio as fecha_inicio')
-            ->where('ofertas_capacitaciones.vb', 1)->get();
-        $convenios = Convenio::join('entidades', 'convenios.entidad_id', 'entidades.id')
-            ->select('convenios.*','entidades.nombre as entidad','entidades.logo')
-            ->where('convenios.estado', 'VIGENTE')->paginate(8);
+        // $ofertas_laborales = OfertaLaboral::where('estado', 1)
+        //     ->join('entidades', 'ofertas_laborales.entidad_id', 'entidades.id')
+        //     ->join('tipo_contrato', 'ofertas_laborales.tipo_contrato_id', 'tipo_contrato.id')
+        //     ->join('escuela', 'ofertas_laborales.area', 'escuela.id')
+        //     ->select('ofertas_laborales.*', 'entidades.nombre as entidad', 'tipo_contrato.descripcion as tipo', 'escuela.nombre as area')->get();
+        // $ofertas_capacitaciones = OfertasCapacitaciones::join('curso', 'curso.id', 'ofertas_capacitaciones.curso_id')
+        //     ->join('entidades', 'entidades.id', '=', 'curso.entidad_id')
+        //     ->select('ofertas_capacitaciones.id as idoferta', 'ofertas_capacitaciones.imagen as imagen', 'curso.titulo as titulo', 'ofertas_capacitaciones.precio as precio', 'ofertas_capacitaciones.total_alumnos as total_alumnos', 'entidades.nombre as entidad', 'ofertas_capacitaciones.oferta_descripcion as oferta_descripcion', 'ofertas_capacitaciones.fecha_inicio as fecha_inicio')
+        //     ->where('ofertas_capacitaciones.vb', 1)->get();
+        // $convenios = Convenio::join('entidades', 'convenios.entidad_id', 'entidades.id')
+        //     ->select('convenios.*','entidades.nombre as entidad','entidades.logo')
+        //     ->where('convenios.estado', 'VIGENTE')->paginate(8);
         $convenios_total = Convenio::where('convenios.estado', 'VIGENTE')->count();
 
         $cantidad_egresados = Alumno::join('condicion_alumnos', 'condicion_alumnos.alumno_id', 'alumno.id')
@@ -65,7 +65,7 @@ class PageController extends Controller
     public function convenios()
     {
         $convenios = Convenio::join('entidades', 'convenios.entidad_id', 'entidades.id')
-            ->select('convenios.*','entidades.nombre as entidad','entidades.logo')
+            ->select('convenios.*','entidades.nombre as entidad','entidades.logo as logo')
             ->where('convenios.estado', 'VIGENTE')->paginate(10);
         return view('pages.convenios',compact('convenios'));
     }
