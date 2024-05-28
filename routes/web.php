@@ -37,7 +37,7 @@ Route::post('/api/escuela', [App\Http\Controllers\ApiController::class, 'escuela
 use App\OfertaLaboral;
 
 Route::get('/bolsa_trabajo', function () {
-    $ofertas_laborales = OfertaLaboral::all(); // Recupera todas las ofertas laborales
+    $ofertas_laborales = OfertaLaboral::orderBy('fecha_contratacion', 'DESC')->get(); // Recupera todas las ofertas laborales
     return view('bolsa_trabajo', ['ofertas_laborales' => $ofertas_laborales]);
 })->name('bolsa_trabajo');
 
@@ -49,7 +49,7 @@ Route::get('/oferta_capacitaciones', function () {
 })->name('oferta_capacitaciones');
 
 // CONVENIOS
-Route::get('/convenios', 'PageController@convenios')->name('convenios');
+Route::get('/convenio', 'PageController@convenios')->name('convenios');
 
 // ENCUESTAS
 use App\Encuesta; // Asegúrate de importar el modelo Encuesta
