@@ -82,6 +82,12 @@
                         <span class="lbl">Banners</span>
                     </a>
                 </li>
+                <li class="blue-dark">
+                    <a href="{{ route('egresadosn.index') }}">
+                        <i class="font-icon font-icon-user {{ request()->is('egresadosn') ? 'active' : '' }}"></i>
+                        <span class="lbl">EgresadosN</span>
+                    </a>
+                </li>
                 <header class="side-menu-title">Administración</header>
                 <li class="blue-dark with-sub"><span>
                         <i class="font-icon font-icon-dashboard {{ request()->is('entidades*') ? 'active' : '' }}"></i>

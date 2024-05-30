@@ -75,6 +75,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('banners', 'BannerController')->names('banners');
 });
 
+// CRUD EgresadosN:
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('egresadosn', 'egresadosnController')->names('egresadosn');
+});
+
 
 // Paginas
 Route::get('/', 'PageController@index')->name('welcome');
