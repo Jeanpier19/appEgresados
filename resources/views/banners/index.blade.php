@@ -18,6 +18,14 @@
                 </div>
             </header>
             <div class="card-block">
+                @if ($message = Session::get('modificate'))
+                    <div class="alert alert-success alert-no-border alert-close alert-dismissible fade in">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
                 <table id="table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead class="text-center align-middle">
                         <tr>
@@ -40,7 +48,8 @@
                                 <td class="text-center align-middle">{{ $banner->fecha_fin ? $banner->fecha_fin : '-' }}
                                 </td>
                                 <td class="text-center align-middle"><span
-                                        class=" {{ $banner->temporal->tempo === 'Permanente' ? 'bg bg-success' : 'bg bg-danger' }}" style="padding: 4px; border-radius: 5px;">{{ $banner->temporal ? $banner->temporal->tempo : 'Sin temporalidad' }}</span>
+                                        class=" {{ $banner->temporal->tempo === 'Permanente' ? 'bg bg-success' : 'bg bg-danger' }}"
+                                        style="padding: 4px; border-radius: 5px;">{{ $banner->temporal ? $banner->temporal->tempo : 'Sin temporalidad' }}</span>
                                 </td>
                                 <td class="text-center">
                                     <form action="{{ route('banners.destroy', $banner->id) }}" class="formulario-eliminar"
@@ -63,13 +72,16 @@
 @section('css')
     {{-- Add here extra stylesheets --}}
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-    <link rel="stylesheet" href="{{asset('startui/css/lib/datatables-net/datatables.min.css')}}">
-    <link rel="stylesheet" href="{{asset('startui/css/separate/vendor/datatables-net.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('startui/css/lib/datatables-net/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('startui/css/separate/vendor/datatables-net.min.css') }}">
 @stop
 
 @section('js')
+
+    {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- Para implementar el datatables --}}
-    <script src="{{asset('startui/js/lib/datatables-net/datatables.min.js')}}"></script>
+    <script src="{{ asset('startui/js/lib/datatables-net/datatables.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#table').DataTable({
@@ -96,9 +108,6 @@
             });
         });
     </script>
-
-    {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @if (session('info') == 'Creado')
         <script>
