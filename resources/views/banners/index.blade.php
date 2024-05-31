@@ -56,8 +56,10 @@
                                         method="POST">
                                         @method('DELETE')
                                         @csrf
-                                        <a href="/banners/{{ $banner->id }}/edit" class="btn btn-dark">Editar</a>
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                                            <a href="/banners/{{ $banner->id }}/edit" class="btn btn-warning"><i class="fa fa-pencil-alt"></i></a>
+                                            <button type="submit" class="btn btn-danger delete-confirm" data-id=""><i class="fas fa-trash"></i></button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
