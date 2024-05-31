@@ -38,9 +38,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($banners as $banner)
+                        @foreach ($banners as $index => $banner)
                             <tr>
-                                <td>{{ $banner->id }}</td>
+                                <td>{{ $index + 1 }}</td>
                                 <td>{{ $banner->nombre }}</td>
                                 <td class="text-center align-middle">
                                     <img src="/banner/{{ $banner->imagen }}" width="60px">
@@ -57,8 +57,10 @@
                                         @method('DELETE')
                                         @csrf
                                         <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-                                            <a href="/banners/{{ $banner->id }}/edit" class="btn btn-warning"><i class="fa fa-pencil-alt"></i></a>
-                                            <button type="submit" class="btn btn-danger delete-confirm" data-id=""><i class="fas fa-trash"></i></button>
+                                            <a href="/banners/{{ $banner->id }}/edit" class="btn btn-warning"><i
+                                                    class="fa fa-pencil-alt"></i></a>
+                                            <button type="submit" class="btn btn-danger delete-confirm" data-id=""><i
+                                                    class="fas fa-trash"></i></button>
                                         </div>
                                     </form>
                                 </td>
