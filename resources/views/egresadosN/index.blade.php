@@ -130,8 +130,9 @@
                             <div class="form-group col-md-6">
                                 <label for="tipo-documento">Tipo de documento</label>
                                 <select class="form-control" id="tipo-documento" name="tipo-documento">
-                                    <option value="0">MASCULINO</option>
-                                    <option value="1">FEMENINO</option>
+                                    @foreach ($genero as $index => $item)
+                                        <option value="{{$index}}">{{$item}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-6">

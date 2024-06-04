@@ -13,7 +13,8 @@ class egresadosnController extends Controller
      */
     public function index()
     {
-        return view('egresadosn.index');
+        $genero = ['MASCULINO','FEMENINO'];
+        return view('egresadosn.index', compact('genero'));
     }
 
     /**
