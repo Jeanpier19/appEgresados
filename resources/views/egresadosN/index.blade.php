@@ -1,6 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @if (session('info') == 'Creado')
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                text: "Registro creado con exito.",
+                showConfirmButton: false,
+                timer: 3500,
+                width: 300, // Ancho del pop-up en píxeles
+                height: 40, // Desactiva el ajuste automático de altura para permitir un pop-up más pequeño
+                backdrop: false // Desactiva el fondo oscuro
+            });
+        </script>
+    @endif
+
     <div class="container-fluid">
         <section class="card">
             <header class="card-header">
@@ -11,78 +26,293 @@
                     </ol>
                 </div>
                 <div class="pull-right">
-                    <a href="{{ route('egresadosn.create') }}" class="btn btn-inline btn-success btn-rounded btn-sm"
-                        data-toggle="modal" data-target="#crearModal"><i class="fa fa-plus-circle"></i>
+                    <a href="#" class="btn btn-inline btn-success btn-rounded btn-sm" data-toggle="modal"
+                        data-target="#crearModal"><i class="fa fa-plus-circle"></i>
                         Crear
                     </a>
-                    <a href="{{ route('egresadosn.create') }}" class="btn btn-inline btn-warning" data-toggle="modal"
-                        data-target="#importarModal" style="padding: 4px; border-radius: 5px;"><i
-                            class="fas fa-file-import"></i>
+                    <a href="#" class="btn btn-inline btn-warning" data-toggle="modal" data-target="#importarModal"
+                        style="padding: 4px; border-radius: 5px;"><i class="fas fa-file-import"></i>
                         Importación masiva
                     </a>
-                    <a href="{{ route('egresadosn.create') }}" class="btn btn-inline btn-danger"
+                    <a href="{{ route('export') }}" class="btn btn-inline btn-danger"
                         style="padding: 4px; border-radius: 5px;"><i class="fas fa-download"></i>
                         Exportación Excel
                     </a>
                 </div>
             </header>
             <div class="card-block">
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <table id="table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead class="text-center align-middle">
                         <tr>
-                            <th>Código</th>
-                            <th>Apellidos y Nombres</th>
+                            <th>N°</th>
+                            <th>Código estudiante</th>
                             <th>DNI</th>
-                            <th>Correo</th>
-                            <th>Celular</th>
+                            <th>Apellidos y Nombres</th>
                             <th>Género</th>
-                            <th>Egresado</th>
+                            <th>F. Egreso</th>
+                            <th>Grado Académico</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>02.0003.AN.AV</td>
-                            <td>MAZA TAMARIZ JEANPIER JOHANN</td>
-                            <td>70171918</td>
-                            <td>jmazat@unasam.edu.pe</td>
-                            <td>910945912</td>
-                            <td>MASCULINO</td>
-                            <td class="text-center align-middle">Si</td>
-                            <td class="text-center align-middle">
-                                <form action="" method="post">
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-                                        <a href="#" class="btn btn-primary"><i class="fa fa-graduation-cap"></i></a>
-                                        <a href="#" class="btn btn-warning"><i class="fa fa-pencil-alt"></i></a>
-                                        <button type="button" class="btn btn-danger delete-confirm" data-id="#"><i
-                                                class="fas fa-trash"></i></button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {{-- @foreach ($egresadosn as $egresado)
+                        @foreach ($egresados as $egresado)
                             <tr>
-                                <td>{{  $banner->codigo }}</td>
-                                <td>{{ $banner->nombre }}</td>
-                                <td class="text-center align-middle">
-                                    <img src="/banner/{{ $banner->imagen }}" width="60px">
-                                </td>
-                                <td class="text-center align-middle">{{ $banner->fecha_fin ? $banner->fecha_fin : '-' }}
-                                </td>
-                                <td class="text-center align-middle"><span
-                                        class=" {{ $banner->temporal->tempo === 'Permanente' ? 'bg bg-success' : 'bg bg-danger' }}" style="padding: 4px; border-radius: 5px;">{{ $banner->temporal ? $banner->temporal->tempo : 'Sin temporalidad' }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <form action="{{ route('banners.destroy', $banner->id) }}" class="formulario-eliminar"
-                                        method="POST">
+                                <td>{{ $egresado->id }}</td>
+                                <td>{{ $egresado->codigo }}</td>
+                                <td>{{ $egresado->num_documento }}</td>
+                                <td>{{ $egresado->nombre_completo }}</td>
+                                <td>{{ $egresado->sexo }}</td>
+                                <td class="text-center align-middle">{{ $egresado->f_egreso }}</td>
+                                <td>{{ $egresado->grado_academico }}</td>
+                                <td>
+                                    <form action="{{ route('egresadosn.destroy', $egresado->id) }}"
+                                        class="formulario-eliminar" method="POST">
                                         @method('DELETE')
                                         @csrf
-                                        <a href="/banners/{{ $banner->id }}/edit" class="btn btn-dark">Editar</a>
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        <input type="hidden" name="egresado_id" value="{{ $egresado->id }}">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                                            <a href="#" class="btn btn-primary"><i
+                                                    class="fa fa-graduation-cap"></i></a>
+                                            <a href="" class="btn btn-warning" data-toggle="modal"
+                                                data-target="#editarModal{{ $egresado->id }}"><i
+                                                    class="fa fa-pencil-alt"></i></a>
+                                            <button type="submit" class="btn btn-danger delete-confirm" data-id=""><i
+                                                    class="fas fa-trash"></i></button>
+                                        </div>
                                     </form>
+
+                                    <!-- Modal Editar -->
+                                    <div class="modal fade" id="editarModal{{ $egresado->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editarModalLabel">Editar</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body"
+                                                    style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                                                    <form action="{{ route('egresadosn.update', $egresado->id) }}"
+                                                        method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="codigo">Código</label>
+                                                                <input type="text" class="form-control" id="codigo"
+                                                                    name="codigo" value="{{ $egresado->codigo }}">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="apellido-paterno">Apellido
+                                                                    Paterno</label>
+                                                                <input type="text" class="form-control" id="paterno"
+                                                                    name="paterno" value="{{ $egresado->paterno }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="materno">Apellido Materno</label>
+                                                                <input type="text" class="form-control" id="materno"
+                                                                    name="materno" value="{{ $egresado->materno }}">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="nombres">Nombres</label>
+                                                                <input type="text" class="form-control" id="nombres"
+                                                                    name="nombres" value="{{ $egresado->nombres }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="tipo_documento">Tipo de
+                                                                    documento</label>
+                                                                <select class="form-control" id="tipo_documento"
+                                                                    name="tipo_documento">
+                                                                    @foreach ($tip_doc as $index => $item_doc)
+                                                                        <option value="{{ $index }}"
+                                                                            {{ $egresado->tipo_documento == $index ? 'selected' : '' }}>
+                                                                            {{ $item_doc }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="documento">Documento</label>
+                                                                <input type="text" class="form-control" id="documento"
+                                                                    name="documento"
+                                                                    value="{{ $egresado->num_documento }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="direccion">Dirección</label>
+                                                                <input type="text" class="form-control" id="direccion"
+                                                                    name="direccion" value="{{ $egresado->direccion }}">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="correo">Correo</label>
+                                                                <input type="text" class="form-control" id="correo"
+                                                                    name="correo" value="{{ $egresado->correo }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="telefono">Teléfono</label>
+                                                                <input type="text" class="form-control" id="telefono"
+                                                                    name="telefono" value="{{ $egresado->telefono }}">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="celular">Celular</label>
+                                                                <input type="text" class="form-control" id="celular"
+                                                                    name="celular" value="{{ $egresado->celular }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="genero">Género</label>
+                                                                <select class="form-control" id="genero"
+                                                                    name="genero">
+                                                                    @foreach ($genero as $index => $item)
+                                                                        <option value="{{ $index }}"
+                                                                            {{ $egresado->sexo == $item ? 'selected' : '' }}>
+                                                                            {{ $item }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="year">Año de egreso</label>
+                                                                <select class="form-control" name="year"
+                                                                    id="year">
+                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                                                        <option value="{{ $i }}"
+                                                                            {{ $egresado->anio == $i ? 'selected' : '' }}>
+                                                                            {{ $i }}</option>
+                                                                    @endfor
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="ciclo">Ciclo</label>
+                                                                <select class="form-control" name="ciclo"
+                                                                    id="ciclo">
+                                                                    @foreach ($ciclos as $index => $ciclo)
+                                                                        <option value="{{ $index }}"
+                                                                            {{ $egresado->ciclo == $index ? 'selected' : '' }}>
+                                                                            {{ $ciclo }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="f_ingreso">Semestre de ingreso</label>
+                                                                <select class="form-control" name="f_ingreso"
+                                                                    id="f_ingreso">
+                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                                                        <option value="{{ $i }}-I"
+                                                                            {{ $egresado->f_ingreso == $i . '-I' ? 'selected' : '' }}>
+                                                                            {{ $i }}-I
+                                                                        </option>
+                                                                        <option value="{{ $i }}-II"
+                                                                            {{ $egresado->f_ingreso == $i . '-II' ? 'selected' : '' }}>
+                                                                            {{ $i }}-II</option>
+                                                                    @endfor
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="f_egreso">Semestre de egreso</label>
+                                                                <select class="form-control" name="f_egreso"
+                                                                    id="f_egreso">
+                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                                                        <option value="{{ $i }}-I"
+                                                                            {{ $egresado->f_egreso == $i . '-I' ? 'selected' : '' }}>
+                                                                            {{ $i }}-I
+                                                                        </option>
+                                                                        <option value="{{ $i }}-II"
+                                                                            {{ $egresado->f_egreso == $i . '-II' ? 'selected' : '' }}>
+                                                                            {{ $i }}-II
+                                                                        </option>
+                                                                    @endfor
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="genero">Facultad</label>
+                                                                <select class="form-control" id="facultad_id"
+                                                                    name="facultad_id">
+                                                                    @foreach ($facultades as $facultad)
+                                                                        <option value="{{ $facultad->id }}"
+                                                                            {{ $egresado->facultad_id == $facultad->id ? 'selected' : '' }}>
+                                                                            {{ $facultad->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="year">Escuela:</label>
+                                                                <select class="form-control" id="escuela_id"
+                                                                    name="escuela_id">
+                                                                    @foreach ($escuelas as $escuela)
+                                                                        <option value="{{ $escuela->id }}"
+                                                                            {{ $egresado->escuela_id == $escuela->id ? 'selected' : '' }}>
+                                                                            {{ $escuela->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="codigo_local">Código de Local</label>
+                                                                <select class="form-control" id="codigo_local"
+                                                                    name="codigo_local">
+                                                                    @for ($i = 1; $i <= 200; $i++)
+                                                                        @php
+                                                                            // Generar el código en el formato SLXX
+                                                                            $codigo =
+                                                                                'SL' .
+                                                                                str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                                        @endphp
+                                                                        <option value="{{ $codigo }}"
+                                                                            {{ $egresado->codigo_local == $codigo ? 'selected' : '' }}>
+                                                                            {{ $codigo }}</option>
+                                                                    @endfor
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="grado_academico">Grado
+                                                                    académico</label>
+                                                                <select class="form-control" id="grado_academico"
+                                                                    name="grado_academico">
+                                                                    @foreach ($grados as $grado)
+                                                                        <option value="{{ $grado->id }}" {{ $egresado->grado_academico == $grado->descripcion ? 'selected' : '' }}>
+                                                                            {{ Str::upper($grado->descripcion) }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <button type="submit" class="btn btn-primary"><i
+                                                                    class="fa fa-save"></i> Guardar
+                                                                Cambios</button>
+                                                            <br><br>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </td>
                             </tr>
-                        @endforeach --}}
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -92,7 +322,7 @@
     <!-- Modal Crear -->
     <div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="crearModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="crearModalLabel">Crear</h5>
@@ -100,12 +330,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <!-- Aquí colocas el formulario para crear el nuevo elemento -->
-                    <!-- Por ejemplo, podrías usar un formulario de Laravel -->
-                    <form action="{{ route('egresadosn.store') }}" method="POST">
+                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                    <form action="{{ route('egresadosn.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <!-- Aquí colocas los campos del formulario -->
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="codigo">Código</label>
@@ -113,13 +340,13 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="apellido-paterno">Apellido Paterno</label>
-                                <input type="text" class="form-control" id="apellido-paterno" name="apellido-paterno">
+                                <input type="text" class="form-control" id="paterno" name="paterno">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="apellido-materno">Apellido Materno</label>
-                                <input type="text" class="form-control" id="apellido-materno" name="apellido-materno">
+                                <label for="materno">Apellido Materno</label>
+                                <input type="text" class="form-control" id="materno" name="materno">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="nombres">Nombres</label>
@@ -128,10 +355,10 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="tipo-documento">Tipo de documento</label>
-                                <select class="form-control" id="tipo-documento" name="tipo-documento">
-                                    @foreach ($genero as $index => $item)
-                                        <option value="{{$index}}">{{$item}}</option>
+                                <label for="tipo_documento">Tipo de documento</label>
+                                <select class="form-control" id="tipo_documento" name="tipo_documento">
+                                    @foreach ($tip_doc as $index => $item_doc)
+                                        <option value="{{ $index }}">{{ $item_doc }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -142,8 +369,18 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion">
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label for="correo">Correo</label>
                                 <input type="text" class="form-control" id="correo" name="correo">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="telefono">Teléfono</label>
+                                <input type="text" class="form-control" id="telefono" name="telefono">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="celular">Celular</label>
@@ -153,12 +390,94 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="genero">Género</label>
-                                <input type="text" class="form-control" id="genero" name="genero">
+                                <select class="form-control" id="genero" name="genero">
+                                    @foreach ($genero as $index => $item)
+                                        <option value="{{ $index }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="year">Año de egreso</label>
+                                <select class="form-control" name="year" id="year">
+                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                         </div>
-
-                        <!-- Otros campos del formulario -->
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="ciclo">Ciclo</label>
+                                <select class="form-control" name="ciclo" id="ciclo">
+                                    @foreach ($ciclos as $index => $ciclo)
+                                        <option value="{{ $index }}">{{ $ciclo }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="f_ingreso">Semestre de ingreso</label>
+                                <select class="form-control" name="f_ingreso" id="f_ingreso">
+                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                        <option value="{{ $i }}">{{ $i }}-I</option>
+                                        <option value="{{ $i }}">{{ $i }}-II</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="f_egreso">Semestre de egreso</label>
+                                <select class="form-control" name="f_egreso" id="f_egreso">
+                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                        <option value="{{ $i }}">{{ $i }}-I</option>
+                                        <option value="{{ $i }}">{{ $i }}-II</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="facultad_id">Facultad</label>
+                                <select class="form-control" id="facultad_id" name="facultad_id">
+                                    @foreach ($facultades as $facultad)
+                                        <option value="{{ $facultad->id }}">{{ $facultad->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="year">Escuela:</label>
+                                <select class="form-control" id="escuela_id" name="escuela_id">
+                                    @foreach ($escuelas as $escuela)
+                                        <option value="{{ $escuela->id }}">{{ $escuela->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="codigo_local">Código de Local</label>
+                                <select class="form-control" id="codigo_local" name="codigo_local">
+                                    @for ($i = 1; $i <= 200; $i++)
+                                        @php
+                                            // Generar el código en el formato SLXX
+                                            $codigo = 'SL' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                                        @endphp
+                                        <option value="{{ $codigo }}">{{ $codigo }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="grado_academico">Grado académico</label>
+                                <select class="form-control" id="grado_academico" name="grado_academico">
+                                    @foreach ($grados as $grado)
+                                        <option value="{{ $grado->id }}">{{ Str::upper($grado->descripcion) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                            <br><br>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -179,7 +498,7 @@
                 <div class="modal-body">
                     <!-- Aquí colocas el formulario para crear el nuevo elemento -->
                     <!-- Por ejemplo, podrías usar un formulario de Laravel -->
-                    <form action="{{ route('egresadosn.store') }}" method="POST">
+                    <form action="{{ route('importar') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <!-- Aquí colocas los campos del formulario -->
                         <div class="form-group">
@@ -203,12 +522,16 @@
 @stop
 
 @section('js')
+    {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- Para implementar el datatables --}}
     <script src="{{ asset('startui/js/lib/datatables-net/datatables.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#table').DataTable({
                 responsive: true,
+                pageLength: 10, // Número de filas por página
+                lengthMenu: [10, 25, 50, 100, 200, 500, 1000],
                 language: {
                     "decimal": "",
                     "emptyTable": "No hay información",
@@ -226,30 +549,55 @@
                         "last": "Ultimo",
                         "next": "Siguiente",
                         "previous": "Anterior"
-                    },
+                    }
                 }
             });
         });
     </script>
 
-    {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    @if (session('info') == 'Creado')
+    @if (session('Importar') == 'Importado')
         <script>
             Swal.fire({
-                position: 'top-end',
-                text: "Registro creado con exito.",
-                showConfirmButton: false,
-                timer: 3500,
-                width: 300, // Ancho del pop-up en píxeles
-                height: 40, // Desactiva el ajuste automático de altura para permitir un pop-up más pequeño
-                backdrop: false // Desactiva el fondo oscuro
+                title: "Importado!",
+                text: "Egresados importados con éxito.",
+                icon: "success"
             });
         </script>
     @endif
 
-    @if (session('Eliminar') == 'Ok')
+    {{-- Usamos la clase nombrada como formulario-eliminar --}}
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todos los formularios con la clase 'formulario-eliminar'
+            const forms = document.querySelectorAll('.formulario-eliminar');
+
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Previene el envío inmediato del formulario
+
+                    // Mostrar SweetAlert2 para la confirmación
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "Este registro se eliminará permanentemente",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "¡Sí, Eliminar!",
+                        cancelButtonText: "Cancelar",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form
+                                .submit(); // Envía el formulario si la confirmación es positiva
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    @if (session('eliminar') == 'ok')
         <script>
             Swal.fire({
                 position: 'top-end',
@@ -262,24 +610,6 @@
             });
         </script>
     @endif
-    {{-- Usamos la clase nombrada como formulario-eliminar --}}
-    <script>
-        $('.formulario-eliminar').submit(function(e) {
-            e.preventDefault();
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "Este registro se eliminará permanentemente",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "¡Si, Eliminar!",
-                cancelButtonText: "Cancelar",
-            }).then((result) => {
-                if (result.value) {
-                    this.submit();
-                }
-            });
-        });
-    </script>
+@stop
+
 @stop

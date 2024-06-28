@@ -27,7 +27,7 @@ class CreateAlumnosTable extends Migration
             $table->string('celular', 10)->nullable();
             $table->bigInteger('activo')->default(1);
             $table->char('estado', 1)->default(1);
-            $table->enum('sexo', ['Masculino', 'Femenino'])->nullable();
+            $table->enum('sexo', ['MASCULINO', 'FEMENINO'])->nullable();
             $table->string('usuario_creacion')->nullable();
             $table->string('usuario_modificacion')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();

@@ -8,5 +8,5 @@ class Condicion extends Model
 {
     protected $table = 'condicion';
 
-    protected $fillable = ['descripcion','usuario_creacion','usuario_modificacion','created_at','updated_at'];
+    protected $fillable = ['id', 'descripcion', 'usuario_creacion', 'usuario_modificacion', 'created_at', 'updated_at'];
 }

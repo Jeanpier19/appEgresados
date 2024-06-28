@@ -64,6 +64,14 @@ Route::get('/contactos', function () {
 })->name('contactos');
 
 
+// EXPORTAR E IMPORTAR
+
+Route::get('/export','ImportExportController@exportar')->name('export');
+Route::post('/import','ImportExportController@importar')->name('importar');
+
+// .....................................................
+
+
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/validar', 'ValidateController@validar')->name('validar');
 Route::post('/enviar/correo', 'ValidateController@send_email')->name('enviar.correo');
