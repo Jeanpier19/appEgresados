@@ -626,6 +626,19 @@
 @section('js')
     {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+
+    @if (session('Importar') == 'Importado')
+        <script>
+            Swal.fire({
+                title: "Importado!",
+                text: "Egresados importados con éxito.",
+                icon: "success"
+            });
+        </script>
+    @endif
+
+@section('js')
     {{-- Para implementar el datatables --}}
     <script src="{{ asset('startui/js/lib/datatables-net/datatables.min.js') }}"></script>
     <script>
@@ -656,18 +669,6 @@
             });
         });
     </script>
-
-    @if (session('Importar') == 'Importado')
-        <script>
-            Swal.fire({
-                title: "Importado!",
-                text: "Egresados importados con éxito.",
-                icon: "success"
-            });
-        </script>
-    @endif
-
-@section('js')
     {{-- Usamos la clase nombrada como formulario-eliminar --}}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

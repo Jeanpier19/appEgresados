@@ -185,7 +185,7 @@
             function eliminar() {
                 $('#table tbody').on('click', '.delete-confirm', function () {
                     let id = $(this).attr('data-id');
-                    let url = '{!! url('alumnos') !!}/' + id;
+                    let url = '{!! url('admin/alumnos') !!}/' + id;
                     swal({
                             title: '¿Estás seguro?',
                             text: "¡No podrás revertir esto!",

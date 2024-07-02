@@ -64,7 +64,7 @@ Route::get('/contactos', function () {
 })->name('contactos');
 
 
-// EXPORTAR E IMPORTAR
+// EXPORTAR E IMPORTAR EGRESADOS:
 
 Route::get('/export','ImportExportController@exportar')->name('export');
 Route::post('/import','ImportExportController@importar')->name('importar');

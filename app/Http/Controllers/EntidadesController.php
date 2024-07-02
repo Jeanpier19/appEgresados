@@ -163,12 +163,12 @@ class EntidadesController extends Controller
 
         $data = array();
         if (!empty($entidades)) {
-            foreach ($entidades as $f => $entidad) {
+            foreach ($entidades as $entidad) {
                 $edit = route('entidades.edit', $entidad->id);
                 $destroy = route('entidades.destroy', $entidad->id);
 
                 $buttons = "<input type='hidden' name='_token' id='csrf-token' value='" . Session::token() . "' />
-        <div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>";
+                <div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>";
                 if (Auth::user()->hasPermissionTo('entidades-editar')) {
                     $buttons = $buttons . "<a href='{$edit}' class='btn btn-warning'><i class='fa fa-pencil-alt'></i></a>";
                 }

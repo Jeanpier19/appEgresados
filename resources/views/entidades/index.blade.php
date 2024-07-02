@@ -100,7 +100,7 @@
 
             $('#table tbody').on('click', '.delete-confirm', function () {
                 let id = $(this).attr('data-id');
-                let url = '{{ url('entidades') }}/' + id;
+                let url = '{{ url('admin/entidades') }}/' + id;
                 swal({
                         title: '¿Estás seguro?',
                         text: "¡No podrás revertir esto!",
