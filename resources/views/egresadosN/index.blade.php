@@ -46,6 +46,16 @@
                         {{ session('error') }}
                     </div>
                 @endif
+                <input type="hidden" id="reporte-nombre">
+
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success alert-no-border alert-close alert-dismissible fade in">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
                 <table id="table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead class="text-center align-middle">
                         <tr>
@@ -76,8 +86,9 @@
                                         @csrf
                                         <input type="hidden" name="egresado_id" value="{{ $egresado->id }}">
                                         <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-                                            <a href="#" class="btn btn-primary"><i
-                                                    class="fa fa-graduation-cap"></i></a>
+                                            <a href="" class="btn btn-primary" data-id="{{ $egresado->id }}"
+                                                data-nombre="{{ $egresado->nombre_completo }}" data-toggle="modal"
+                                                data-target="#modalCapacitacion"><i class="fa fa-graduation-cap"></i></a>
                                             <a href="" class="btn btn-warning" data-toggle="modal"
                                                 data-target="#editarModal{{ $egresado->id }}"><i
                                                     class="fa fa-pencil-alt"></i></a>
@@ -190,7 +201,7 @@
                                                                 <label for="year">Año de egreso</label>
                                                                 <select class="form-control" name="year"
                                                                     id="year">
-                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                                                    @for ($i = date('Y'); $i >= 2000; $i--)
                                                                         <option value="{{ $i }}"
                                                                             {{ $egresado->anio == $i ? 'selected' : '' }}>
                                                                             {{ $i }}</option>
@@ -215,14 +226,15 @@
                                                                 <label for="f_ingreso">Semestre de ingreso</label>
                                                                 <select class="form-control" name="f_ingreso"
                                                                     id="f_ingreso">
-                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                                                    @for ($i = date('Y'); $i >= 2000; $i--)
+                                                                        <option value="{{ $i }}-II"
+                                                                            {{ $egresado->f_ingreso == $i . '-II' ? 'selected' : '' }}>
+                                                                            {{ $i }}-II
+                                                                        </option>
                                                                         <option value="{{ $i }}-I"
                                                                             {{ $egresado->f_ingreso == $i . '-I' ? 'selected' : '' }}>
                                                                             {{ $i }}-I
                                                                         </option>
-                                                                        <option value="{{ $i }}-II"
-                                                                            {{ $egresado->f_ingreso == $i . '-II' ? 'selected' : '' }}>
-                                                                            {{ $i }}-II</option>
                                                                     @endfor
                                                                 </select>
                                                             </div>
@@ -230,14 +242,14 @@
                                                                 <label for="f_egreso">Semestre de egreso</label>
                                                                 <select class="form-control" name="f_egreso"
                                                                     id="f_egreso">
-                                                                    @for ($i = 2000; $i <= date('Y'); $i++)
-                                                                        <option value="{{ $i }}-I"
-                                                                            {{ $egresado->f_egreso == $i . '-I' ? 'selected' : '' }}>
-                                                                            {{ $i }}-I
-                                                                        </option>
+                                                                    @for ($i = date('Y'); $i >= 2000; $i--)
                                                                         <option value="{{ $i }}-II"
                                                                             {{ $egresado->f_egreso == $i . '-II' ? 'selected' : '' }}>
                                                                             {{ $i }}-II
+                                                                        </option>
+                                                                        <option value="{{ $i }}-I"
+                                                                            {{ $egresado->f_egreso == $i . '-I' ? 'selected' : '' }}>
+                                                                            {{ $i }}-I
                                                                         </option>
                                                                     @endfor
                                                                 </select>
@@ -291,7 +303,8 @@
                                                                 <select class="form-control" id="grado_academico"
                                                                     name="grado_academico">
                                                                     @foreach ($grados as $grado)
-                                                                        <option value="{{ $grado->id }}" {{ $egresado->grado_academico == $grado->descripcion ? 'selected' : '' }}>
+                                                                        <option value="{{ $grado->id }}"
+                                                                            {{ $egresado->grado_academico == $grado->descripcion ? 'selected' : '' }}>
                                                                             {{ Str::upper($grado->descripcion) }}
                                                                         </option>
                                                                     @endforeach
@@ -399,7 +412,8 @@
                             <div class="form-group col-md-6">
                                 <label for="year">Año de egreso</label>
                                 <select class="form-control" name="year" id="year">
-                                    @for ($i = 2000; $i <= date('Y'); $i++)
+                                    <option value="">Seleccionar</option>
+                                    @for ($i = date('Y'); $i >= 2000; $i--)
                                         <option value="{{ $i }}">{{ $i }}</option>
                                     @endfor
                                 </select>
@@ -417,18 +431,20 @@
                             <div class="form-group col-md-6">
                                 <label for="f_ingreso">Semestre de ingreso</label>
                                 <select class="form-control" name="f_ingreso" id="f_ingreso">
-                                    @for ($i = 2000; $i <= date('Y'); $i++)
-                                        <option value="{{ $i }}">{{ $i }}-I</option>
+                                    <option value="">Seleccionar</option>
+                                    @for ($i = date('Y'); $i >= 2000; $i--)
                                         <option value="{{ $i }}">{{ $i }}-II</option>
+                                        <option value="{{ $i }}">{{ $i }}-I</option>
                                     @endfor
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="f_egreso">Semestre de egreso</label>
                                 <select class="form-control" name="f_egreso" id="f_egreso">
-                                    @for ($i = 2000; $i <= date('Y'); $i++)
-                                        <option value="{{ $i }}">{{ $i }}-I</option>
+                                    <option value="">Seleccionar</option>
+                                    @for ($i = date('Y'); $i >= 2000; $i--)
                                         <option value="{{ $i }}">{{ $i }}-II</option>
+                                        <option value="{{ $i }}">{{ $i }}-I</option>
                                     @endfor
                                 </select>
                             </div>
@@ -437,6 +453,7 @@
                             <div class="form-group col-md-6">
                                 <label for="facultad_id">Facultad</label>
                                 <select class="form-control" id="facultad_id" name="facultad_id">
+                                    <option value="">Seleccionar</option>
                                     @foreach ($facultades as $facultad)
                                         <option value="{{ $facultad->id }}">{{ $facultad->nombre }}</option>
                                     @endforeach
@@ -445,6 +462,7 @@
                             <div class="form-group col-md-6">
                                 <label for="year">Escuela:</label>
                                 <select class="form-control" id="escuela_id" name="escuela_id">
+                                    <option value="">Seleccionar</option>
                                     @foreach ($escuelas as $escuela)
                                         <option value="{{ $escuela->id }}">{{ $escuela->nombre }}</option>
                                     @endforeach
@@ -455,6 +473,7 @@
                             <div class="form-group col-md-6">
                                 <label for="codigo_local">Código de Local</label>
                                 <select class="form-control" id="codigo_local" name="codigo_local">
+                                    <option value="">Seleccionar</option>
                                     @for ($i = 1; $i <= 200; $i++)
                                         @php
                                             // Generar el código en el formato SLXX
@@ -467,6 +486,7 @@
                             <div class="form-group col-md-6">
                                 <label for="grado_academico">Grado académico</label>
                                 <select class="form-control" id="grado_academico" name="grado_academico">
+                                    <option value="">Seleccionar</option>
                                     @foreach ($grados as $grado)
                                         <option value="{{ $grado->id }}">{{ Str::upper($grado->descripcion) }}
                                         </option>
@@ -508,6 +528,88 @@
                         <!-- Otros campos del formulario -->
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Capacitaciones y experiencias -->
+    <div class="modal fade" id="modalCapacitacion" tabindex="-1" role="dialog" aria-labelledby="modalCapacitaciones"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="modal-close" data-dismiss="modal" aria-label="Close">
+                        <i class="font-icon-close-2"></i>
+                    </button>
+                    <h4 class="modal-title">Capacitaciones</h4>
+                </div>
+                <div class="modal-body">
+                    <section class="tabs-section">
+                        <div class="tabs-section-nav tabs-section-nav-icons">
+                            <div class="tbl">
+                                <ul class="nav" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#capacitacion" role="tab" data-toggle="tab"><span
+                                                class="nav-link-in"><i
+                                                    class="fa fa-graduation-cap"></i>Capacitaciones</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#experiencia_laboral" role="tab"
+                                            data-toggle="tab"><span class="nav-link-in"><span
+                                                    class="fa fa-file-text-o"></span>Experiencia Laboral</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--.tabs-section-nav-->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade" id="capacitacion">
+                                <table id="table-cap" class="display table table-striped table-bordered" cellspacing="0"
+                                    width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>*</th>
+                                            <th>Descripción</th>
+                                            <th>Curso</th>
+                                            <th>Estado</th>
+                                            <th>¿Visto Bueno?</th>
+                                            <th>Certificado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <!--.tab-pane-->
+                            <div role="tabpanel" class="tab-pane fade" id="experiencia_laboral">
+                                <table id="table-exp" class="display table table-striped table-bordered" cellspacing="0"
+                                    width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>*</th>
+                                            <th>Entidad</th>
+                                            <th>Cargo</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Salida</th>
+                                            <th>Reconocimientos</th>
+                                            <th>Satisfacción</th>
+                                            <th>¿Visto Bueno?</th>
+                                            <th>Archivo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <!--.tab-pane-->
+                        </div>
+                        <!--.tab-content-->
+                    </section>
+                    <!--.tabs-section-->
                 </div>
             </div>
         </div>
@@ -565,8 +667,9 @@
         </script>
     @endif
 
-    {{-- Usamos la clase nombrada como formulario-eliminar --}}
 @section('js')
+    {{-- Usamos la clase nombrada como formulario-eliminar --}}
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -610,6 +713,357 @@
             });
         </script>
     @endif
+
+    <script type="text/JavaScript">
+        $(document).ready(function () {
+                openTab();
+                $('#table tbody').on('click', '.delete-confirm', function () {
+                    let idalumno = $(this).attr('data-id');
+                    let url = '{!! route('egresado.destroy', 'idalumno') !!}';
+                    swal({
+                            title: '¿Estás seguro?',
+                            text: "¡No podrás revertir esto!",
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: '!Si, eliminar!',
+                            cancelButtonText: 'Cancelar',
+                            closeOnConfirm: false,
+                            closeOnCancel: false
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                                $.ajax({
+                                    type: 'POST',
+                                    url: url,
+                                    data: {
+                                        "_token": "{{ csrf_token() }}",
+                                        "_method": 'DELETE',
+                                        "id": idalumno,
+                                    },
+                                    dataType: 'JSON',
+                                    beforeSend: function () {
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            $.notify({
+                                                icon: 'font-icon font-icon-check-circle',
+                                                title: '<strong>¡Existoso!</strong>',
+                                                message: 'Alumno eliminada correctamente'
+                                            }, {
+                                                placement: {
+                                                    from: "top",
+                                                },
+                                                type: 'success'
+                                            });
+                                            tabla.ajax.reload();
+                                        } else {
+                                            $.notify({
+                                                icon: 'font-icon font-icon-warning',
+                                                title: '<strong>¡Error!</strong>',
+                                                message: 'Hubo un error al eliminar la Alumno'
+                                            }, {
+                                                placement: {
+                                                    from: "top",
+                                                },
+                                                type: 'danger'
+                                            });
+                                        }
+                                        swal.close()
+                                    },
+                                    error: function (err) {
+                                        console.log(err);
+                                    }
+                                });
+                            } else {
+                                swal({
+                                    title: "Cancelado",
+                                    text: "El registro está a salvo",
+                                    type: "error",
+                                    confirmButtonClass: "btn-danger"
+                                });
+                            }
+                        });
+                });
+
+                $('#table tbody').off('click').on('click', '.capacitacion', function () {
+                    id = $(this).attr('data-id');
+                    nombre = $(this).attr('data-nombre');
+                    $('#reporte-nombre').val(nombre);
+                    $('[href="#capacitacion"]').tab('show');
+                });
+
+                function openTab() {
+                    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                        var target = $(e.target).attr("href") // activated tab
+                        if (target === '#capacitacion') {
+                            let tabla = $('#table-cap').DataTable();
+                            tabla.destroy();
+                            tabla = $('#table-cap').DataTable({
+                                dom: 'Bfrtip',
+                                buttons: [{
+                                    extend: 'excel',
+                                    text: 'A Excel',
+                                    title: $('#reporte-nombre').val() + '_capacitaciones',
+                                    exportOptions: {
+                                        columns: [1, 2, 3, 4, 5]
+                                    }
+                                }],
+                                responsive: true,
+                                "processing": true,
+                                "serverSide": true,
+                                "autoWidth": true,
+                                language: {
+                                    "decimal": "",
+                                    "emptyTable": "No hay información",
+                                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                                    "infoPostFix": "",
+                                    "thousands": ",",
+                                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                                    "loadingRecords": "Cargando...",
+                                    "processing": "Procesando...",
+                                    "search": "Buscar:",
+                                    "zeroRecords": "Sin resultados encontrados",
+                                    "No results matched": "No se encontraron resultados",
+                                    "paginate": {
+                                        "first": "Primero",
+                                        "last": "Ultimo",
+                                        "next": "Siguiente",
+                                        "previous": "Anterior"
+                                    },
+                                },
+                                "ajax": {
+                                    "url": "{{ route('egresado.get_capacitaciones') }}",
+                                    "dataType": "json",
+                                    "type": "POST",
+                                    "data": {
+                                        _token: "{{ csrf_token() }}",
+                                        "id": id
+                                    }
+                                },
+                                "columns": [{
+                                    "data": "idcapacitacion"
+                                },
+                                    {
+                                        "data": "descripcion"
+                                    },
+                                    {
+                                        "data": "curso"
+                                    },
+                                    {
+                                        "data": "estado"
+                                    },
+                                    {
+                                        "data": "vistobueno"
+                                    },
+                                    {
+                                        "data": "archivo"
+                                    },
+                                    {
+                                        "data": "opciones"
+                                    }
+                                ],
+                                "columnDefs": [{
+                                    "className": "text-center",
+                                    "targets": [0, 1]
+                                },
+                                    {
+                                        "bSortable": true,
+                                        "aTargets": [5, 6]
+                                    },
+                                ],
+                            });
+                        }
+
+                        if (target === '#experiencia_laboral') {
+                            let tabla2 = $('#table-exp').DataTable();
+                            tabla2.destroy();
+                            tabla2 = $('#table-exp').DataTable({
+                                dom: 'Bfrtip',
+                                buttons: [{
+                                    extend: 'excel',
+                                    text: 'A Excel',
+                                    title: $('#reporte-nombre').val() + '_experiencia_laboral',
+                                    exportOptions: {
+                                        columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                                    }
+                                }],
+                                responsive: true,
+                                "processing": true,
+                                "serverSide": true,
+                                "autoWidth": true,
+                                language: {
+                                    "decimal": "",
+                                    "emptyTable": "No hay información",
+                                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                                    "infoPostFix": "",
+                                    "thousands": ",",
+                                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                                    "loadingRecords": "Cargando...",
+                                    "processing": "Procesando...",
+                                    "search": "Buscar:",
+                                    "zeroRecords": "Sin resultados encontrados",
+                                    "No results matched": "No se encontraron resultados",
+                                    "paginate": {
+                                        "first": "Primero",
+                                        "last": "Ultimo",
+                                        "next": "Siguiente",
+                                        "previous": "Anterior"
+                                    },
+                                },
+                                "ajax": {
+                                    "url": "{{ route('egresado.get_experiencia') }}",
+                                    "dataType": "json",
+                                    "type": "POST",
+                                    "data": {
+                                        _token: "{{ csrf_token() }}",
+                                        "id": id
+                                    }
+                                },
+                                "columns": [{
+                                    "data": "idexperiencia"
+                                },
+                                    {
+                                        "data": "identidad"
+                                    },
+                                    {
+                                        "data": "cargo_laboral"
+                                    },
+                                    {
+                                        "data": "fecha_inicio"
+                                    },
+                                    {
+                                        "data": "fecha_salida"
+                                    },
+                                    {
+                                        "data": "reconocimientos"
+                                    },
+                                    {
+                                        "data": "nivel_satisfaccion"
+                                    },
+                                    {
+                                        "data": "vb"
+                                    },
+                                    {
+                                        "data": "archivo"
+                                    },
+                                    {
+                                        "data": "opciones"
+                                    }
+                                ],
+                                "columnDefs": [{
+                                    "className": "text-center",
+                                    "targets": [0, 7]
+                                },
+                                    {
+                                        "bSortable": true,
+                                        "aTargets": [5, 6]
+                                    },
+                                ],
+                            });
+                        }
+                    });
+                }
+                });
+            function validar(id, type) {
+                if (type == '1') {
+                    $.ajax({
+                        url: "{{ route('egresado.validar-experiencia') }}",
+                        dataType: "JSON",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            method: "POST",
+                            "id": id
+                        },
+                        success: function () {
+                            $('#table-exp').DataTable().ajax.reload();
+                        }
+                    });
+                }
+                if (type == '0') {
+                    console.log("validado")
+                    $.ajax({
+                        url: "{{ route('egresado.validar-capacitacion') }}",
+                        dataType: "JSON",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            method: "POST",
+                            "id": id
+                        },
+                        success: function () {
+                            $('#table-cap').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            }
+
+            function invalidar(id, type) {
+                swal({
+                        title: '¿Invalidar?',
+                        text: "¡No podrás revertir esto!",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: '!Si, invalidar!',
+                        cancelButtonText: 'Cancelar',
+                        closeOnConfirm: true,
+                        closeOnCancel: false
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            if (type == '1') {
+                                $.ajax({
+                                    url: "{{ route('egresado.invalidar-experiencia') }}",
+                                    dataType: "JSON",
+                                    type: "DELETE",
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        method: "DELETE",
+                                        "id": id
+                                    },
+                                    success: function () {
+                                        $('#table-exp').DataTable().ajax.reload();
+                                    }
+                                });
+                            }
+                            if (type == '0') {
+                                $.ajax({
+                                    url: "{{ route('egresado.invalidar-capacitacion') }}",
+                                    dataType: "JSON",
+                                    type: "DELETE",
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        method: "DELETE",
+                                        "id": id
+                                    },
+                                    success: function () {
+                                        $('#table-cap').DataTable().ajax.reload();
+                                    }
+                                });
+                            }
+                        } else {
+                            swal({
+                                title: "Cancelado",
+                                text: "El registro está a salvo",
+                                type: "error",
+                                confirmButtonClass: "btn-danger"
+                            });
+                        }
+                    });
+            }
+        </script>
+
 @stop
 
 @stop
