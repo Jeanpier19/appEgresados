@@ -32,13 +32,20 @@ class CapacitacionesController extends Controller
             ->where('tablas.estado', '=', '1')
             ->select('tablas.valor', 'tablas.descripcion')
             ->pluck('tablas.descripcion', 'tablas.valor');
-        $alumno_id = DB::table('alumno')
+        $alumno = DB::table('alumno')
             ->join('users', 'users.id', '=', 'alumno.user_id')
             ->where('users.id', '=', Auth::user()->id)
             ->select('alumno.id')
             ->first();
 
-        return view('capacitaciones.index', ["estado" => $this->estado, "curso_empresa" => $curso_empresa, "area" => $area, "alumno_id" => $alumno_id->id]);
+        $alumno_id = $alumno ? $alumno->id : null;
+
+        return view('capacitaciones.index', [
+            "estado" => $this->estado,
+            "curso_empresa" => $curso_empresa,
+            "area" => $area,
+            "alumno_id" => $alumno_id
+        ]);
     }
 
     public function get_capacitaciones(Request $request)
@@ -65,12 +72,18 @@ class CapacitacionesController extends Controller
 
         $id = 0;
         if (empty($request->id)) {
-            $alumno_id = DB::table('alumno')
-                        ->join('users','users.id','=','alumno.user_id')
-                        ->where('users.id','=',Auth::user() -> id)
-                        ->select('alumno.id')
-                        ->first();
-            $id = $alumno_id->id;
+            $alumno = DB::table('alumno')
+                ->join('users', 'users.id', '=', 'alumno.user_id')
+                ->where('users.id', '=', Auth::user()->id)
+                ->select('alumno.id')
+                ->get();
+
+            if ($alumno->isEmpty()) {
+                // Manejo cuando no se encuentra ningún alumno
+                return response()->json(['error' => 'No se encontró el alumno asociado al usuario.']);
+            }
+
+            $id = $alumno->first()->id;
             $totalData = DB::table('capacitaciones')
                 ->where('capacitaciones.alumno_id', '=', $id)
                 ->count();
@@ -97,8 +110,16 @@ class CapacitacionesController extends Controller
                 ->where('tablas.dep_id', '=', '5', 'and')
                 ->where('alumno.id', '=', $id, 'and')
                 ->where('capacitaciones.activo', '=', '1')
-                ->select('capacitaciones.id', 'capacitaciones.descripcion','alumno.id as idalumno','curso.id as idcurso', DB::raw('curso.titulo as curso'), 'capacitaciones.estado',
-                    'capacitaciones.vb', 'capacitaciones.archivo');
+                ->select(
+                    'capacitaciones.id',
+                    'capacitaciones.descripcion',
+                    'alumno.id as idalumno',
+                    'curso.id as idcurso',
+                    DB::raw('curso.titulo as curso'),
+                    'capacitaciones.estado',
+                    'capacitaciones.vb',
+                    'capacitaciones.archivo'
+                );
         } else {
             $search = $request->input('search.value');
 
@@ -106,8 +127,16 @@ class CapacitacionesController extends Controller
                 ->join('curso', 'curso.id', '=', 'capacitaciones.curso_id')
                 ->join('alumno', 'alumno.id', '=', 'capacitaciones.alumno_id')
                 ->join('tablas', 'tablas.valor', '=', 'curso.idarea')
-                ->select('capacitaciones.id', 'capacitaciones.descripcion','alumno.id as idalumno','curso.id as idcurso', DB::raw('curso.titulo as curso'), 'capacitaciones.estado',
-                    'capacitaciones.vb', 'capacitaciones.archivo')
+                ->select(
+                    'capacitaciones.id',
+                    'capacitaciones.descripcion',
+                    'alumno.id as idalumno',
+                    'curso.id as idcurso',
+                    DB::raw('curso.titulo as curso'),
+                    'capacitaciones.estado',
+                    'capacitaciones.vb',
+                    'capacitaciones.archivo'
+                )
                 ->where('tablas.dep_id', '=', '5', 'and')
                 ->where('alumno.id', '=', $id, 'and')
                 ->where('capacitaciones.activo', '=', '1')
@@ -167,13 +196,13 @@ class CapacitacionesController extends Controller
                 }
                 //Apreciaciones
                 $ofertas = DB::table('alumno_ofertas_capacitaciones as aoc')
-                            ->join('ofertas_capacitaciones as oc','aoc.oferta_capacitaciones_id','=','oc.id')
-                            ->where('aoc.alumno_id','=',$cap->idalumno,'and')
-                            ->where('oc.curso_id','=',$cap->idcurso)->count();
-                if($ofertas == 1){
+                    ->join('ofertas_capacitaciones as oc', 'aoc.oferta_capacitaciones_id', '=', 'oc.id')
+                    ->where('aoc.alumno_id', '=', $cap->idalumno, 'and')
+                    ->where('oc.curso_id', '=', $cap->idcurso)->count();
+                if ($ofertas == 1) {
                     $nestedData['apreciacion'] = "<button type='button' class='btn btn-success' onClick='Apreciacion({$cap->idalumno},{$cap->idcurso})'><i class='fa fa-commenting'></i></button>";
-                }else{
-                    $nestedData['apreciacion'] ="<label class='label label-light-grey'>NO DISPONIBLE</label>";
+                } else {
+                    $nestedData['apreciacion'] = "<label class='label label-light-grey'>NO DISPONIBLE</label>";
                 }
                 //
                 $data[] = $nestedData;
@@ -226,7 +255,6 @@ class CapacitacionesController extends Controller
                 try {
                     Storage::disk('certificados')->put($file_path, File::get($file));
                 } catch (Exception $e) {
-
                 }
                 //$image-> store($image_path,'escuelaLogos');
             } else {
@@ -261,7 +289,6 @@ class CapacitacionesController extends Controller
                     Storage::disk('certificados')->delete($capacitacion->archivo);
                     Storage::disk('certificados')->put($file_path, File::get($file));
                 } catch (Exception $e) {
-
                 }
                 //$image-> store($image_path,'escuelaLogos');
             } else {
@@ -281,7 +308,6 @@ class CapacitacionesController extends Controller
             $response = 'cap,' . $capacitacion->id;
             return Redirect::back()->with('error_code', $response);
         }
-
     }
 
     public function get_data_capacitacion(Request $request)

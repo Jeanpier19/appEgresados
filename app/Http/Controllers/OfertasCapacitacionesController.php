@@ -65,11 +65,14 @@ class OfertasCapacitacionesController extends Controller
             ->join('entidades', 'entidades.id', '=', 'curso.entidad_id')
             ->select('ofertas_capacitaciones.id as idoferta', 'ofertas_capacitaciones.imagen as imagen', 'curso.titulo as titulo', 'ofertas_capacitaciones.precio as precio', 'ofertas_capacitaciones.total_alumnos as total_alumnos', 'entidades.nombre as entidad', 'ofertas_capacitaciones.oferta_descripcion as oferta_descripcion', 'ofertas_capacitaciones.fecha_fin as fecha_fin', 'ofertas_capacitaciones.fecha_inicio as fecha_inicio')
             ->where('ofertas_capacitaciones.vb', 1)->get();
-        $alumno_id = DB::table('alumno')
+        $alumno = DB::table('alumno')
             ->join('users', 'users.id', '=', 'alumno.user_id')
             ->where('users.id', '=', Auth::user()->id)
             ->select('alumno.id')
-            ->get();
+            ->first();
+
+        $alumno_id = $alumno ? $alumno->id : null;
+        
         $alumno_ofertas = AlumnoOfertasCapacitacion::get();
         $var = 0;
         $voucher = 0;
@@ -83,7 +86,14 @@ class OfertasCapacitacionesController extends Controller
             "Malo" => "Malo",
             "Muy Malo" => "Muy Malo"
         );
-        return view('oferta_capacitacion.registro', ['ofertas_capacitaciones' => $ofertas_capacitaciones, 'alumno_id' => $alumno_id[0]->id, 'alumno_ofertas' => $alumno_ofertas, 'var' => $var, 'voucher' => $voucher, 'vb' => $vb, 'apreciacion' => $apreciacion, 'vb_apreciacion' => $vb_apreciacion, 'certificado' => $certificado]);
+        return view('oferta_capacitacion.registro', [
+            'ofertas_capacitaciones' => $ofertas_capacitaciones, 
+            'alumno_id' => $alumno_id[0],
+            'alumno_ofertas' => $alumno_ofertas,
+            'var' => $var, 'voucher' => $voucher,
+            'vb' => $vb, 'apreciacion' => $apreciacion,
+            'vb_apreciacion' => $vb_apreciacion,
+            'certificado' => $certificado]);
     }
 
 
@@ -407,10 +417,10 @@ class OfertasCapacitacionesController extends Controller
         try {
             $file = $request->file('file');
             $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
-    
+
             // Mueve el archivo directamente a la carpeta public/img
             $file->move(public_path('img/recomendacionEvidencia'), $nombre);
-    
+
             // Devuelve la URL completa de la imagen para su uso posterior
             return response()->json(['logo' => asset('img/recomendacionEvidencia/' . $nombre), 'success' => 'success']);
         } catch (\Exception $e) {

@@ -12,12 +12,13 @@ class NecesidadCapacitacionesController extends Controller
 {
     public function Index()
     {
-        $alumno_id = DB::table('alumno')
+        $alumno = DB::table('alumno')
             ->join('users', 'users.id', '=', 'alumno.user_id')
             ->where('users.id', '=', Auth::user()->id)
             ->select('alumno.id')
             ->first();
-        return view('necesidades.index', ['alumno_id' => $alumno_id->id]);
+        $alumno_id = $alumno ? $alumno->id : null;
+        return view('necesidades.index', ['alumno_id' => $alumno_id]);
     }
 
     public function get_necesidades(Request $request)
@@ -27,12 +28,18 @@ class NecesidadCapacitacionesController extends Controller
         );
 
         $id = 0;
-        $alumno_id = DB::table('alumno')
+        $alumno = DB::table('alumno')
             ->join('users', 'users.id', '=', 'alumno.user_id')
             ->where('users.id', '=', Auth::user()->id)
             ->select('alumno.id')
-            ->first();
-        $id = $alumno_id->id;
+            ->get();
+
+        if ($alumno->isEmpty()) {
+            // Manejo cuando no se encuentra ningún alumno
+            return response()->json(['error' => 'No se encontró el alumno asociado al usuario.']);
+        }
+
+        $id = $alumno->first()->id;
         $totalData = DB::table('necesidad_capacitaciones')
             ->where('necesidad_capacitaciones.alumno_id', '=', $id)
             ->count();
@@ -103,10 +110,11 @@ class NecesidadCapacitacionesController extends Controller
         echo json_encode($json_data);
     }
 
-    public function store(Request $request){
-        $input = $request-> all();
-        if($input['updateNec'] == -1){
-            $this -> validate($request,[
+    public function store(Request $request)
+    {
+        $input = $request->all();
+        if ($input['updateNec'] == -1) {
+            $this->validate($request, [
                 'idalumno' => 'required'
             ]);
 
@@ -119,14 +127,14 @@ class NecesidadCapacitacionesController extends Controller
             ]);
             $response = 'cap,' . $nec->id;
             return Redirect::back()->with('error_code', $response);
-        }else{
-            $this -> validate($request,[
+        } else {
+            $this->validate($request, [
                 'updateNec' => 'required',
                 'idalumno' => 'required'
             ]);
 
             $nec = NecesidadCapacitaciones::findOrFail($input['updateNec']);
-            $nec-> update([
+            $nec->update([
                 'alumno_id' => $request->idalumno,
                 'descripcion' => $request->descripcion,
                 'fecha' => $request->fecha,
@@ -136,10 +144,10 @@ class NecesidadCapacitacionesController extends Controller
             $response = 'cap,' . $nec->id;
             return Redirect::back()->with('error_code', $response);
         }
-
     }
 
-    public function get_data_necesidad(Request $request){
+    public function get_data_necesidad(Request $request)
+    {
         $necesidad = DB::table('necesidad_capacitaciones')
             ->where('necesidad_capacitaciones.id', '=', $request->id)
             ->get();
@@ -148,7 +156,8 @@ class NecesidadCapacitacionesController extends Controller
         echo json_encode($data);
     }
 
-    public function destroy(Request $request){
+    public function destroy(Request $request)
+    {
         $necesidad = NecesidadCapacitaciones::findorFail($request->id);
         $necesidad->delete();
         return response()->json([

@@ -98,91 +98,190 @@ class PostulacionController extends Controller
      * @param Request $request
      * @return void
      */
+
     public function postulaciones_all(Request $request)
     {
-        $columns = array(
-            0 => 'id',
-            1 => 'oferta_laboral',
-            2 => 'alumno',
-            3 => 'fecha',
-        );
+        $columns = [
+            'id',
+            'oferta_laboral',
+            'alumno',
+            'fecha',
+        ];
 
-        $totalData = AlumnoOfertaLaboral::count();
-        $limit = $request->input('length');
-        $start = $request->input('start');
+        $query = AlumnoOfertaLaboral::query()
+            ->join('alumno', 'alumno_oferta_laboral.alumno_id', 'alumno.id')
+            ->join('ofertas_laborales', 'alumno_oferta_laboral.oferta_laboral_id', 'ofertas_laborales.id')
+            ->select('alumno_oferta_laboral.*', 'alumno.nombres as alumno', 'ofertas_laborales.titulo as oferta_laboral', 'ofertas_laborales.alumno_id as asignados', 'ofertas_laborales.vacantes');
+
+        // Filtrado por título de oferta laboral
+        if ($request->filled('search.value')) {
+            $search = $request->input('search.value');
+            $query->where('ofertas_laborales.titulo', 'LIKE', "%{$search}%");
+        }
+
+        // Filtrado adicional según el rol del usuario
+        $userRoles = Auth::user()->getRoleNames();
+        if (count($userRoles) > 0) {
+            switch ($userRoles[0]) {
+                case 'Egresado':
+                    $alumno = Alumno::where('user_id', Auth::user()->id)->first();
+                    if ($alumno) {
+                        $query->where('alumno_oferta_laboral.alumno_id', $alumno->id);
+                    } else {
+                        // Manejar el caso donde el usuario no tiene asociado un alumno
+                        $query->where('alumno_oferta_laboral.alumno_id', -1); // Por ejemplo, o ajusta según tu lógica
+                    }
+                    break;
+                case 'Administrador':
+                    // Lógica para administradores, si es necesaria
+                    break;
+            }
+        } else {
+            // Manejar el caso donde el usuario no tiene roles asignados
+            $query->where('alumno_oferta_laboral.alumno_id', -1); // O ajusta según tu lógica
+        }
+
+        // Conteo total de registros
+        $totalData = $query->count();
+
+        // Orden y paginación
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
+        $query->orderBy($order, $dir)
+            ->offset($request->input('start'))
+            ->limit($request->input('length'));
 
-        if (empty($request->input('search.value'))) {
-            $postulaciones = DB::table('alumno_oferta_laboral')
-                ->join('alumno', 'alumno_oferta_laboral.alumno_id', 'alumno.id')
-                ->join('ofertas_laborales', 'alumno_oferta_laboral.oferta_laboral_id', 'ofertas_laborales.id')
-                ->select('alumno_oferta_laboral.*', 'alumno.nombres as alumno', 'ofertas_laborales.titulo as oferta_laboral', 'ofertas_laborales.alumno_id as asignados','ofertas_laborales.vacantes');
-        } else {
-            $search = $request->input('search.value');
-            $postulaciones = DB::table('alumno_oferta_laboral')
-                ->join('alumno', 'alumno_oferta_laboral.alumno_id', 'alumno.id')
-                ->join('ofertas_laborales', 'alumno_oferta_laboral.oferta_laboral_id', 'ofertas_laborales.id')
-                ->select('alumno_oferta_laboral.*', 'alumno.nombres as alumno', 'ofertas_laborales.titulo as oferta_laboral', 'ofertas_laborales.alumno_id as asignados','ofertas_laborales.vacantes')
-                ->where('ofertas_laborales.titulo', 'LIKE', "%{$search}%");
-        }
-        switch (Auth::user()->getRoleNames()[0]) {
-            case 'Egresado':
-                $alumno = Alumno::where('user_id', Auth::user()->id)->first();
-                $postulaciones = $postulaciones->where('alumno_oferta_laboral.alumno_id', $alumno->id);
-                break;
-        }
+        // Obtener los resultados
+        $postulaciones = $query->get();
 
-        $totalFiltered = $postulaciones->count();
-        $postulaciones = $postulaciones->offset($start)
-            ->limit($limit)
-            ->orderBy($order, $dir)
-            ->get();
+        // Construcción del JSON de respuesta
+        $data = [];
+        foreach ($postulaciones as $postulacion) {
+            $show = route('postulaciones.show', $postulacion->id);
 
-        $data = array();
-        if (!empty($postulaciones)) {
-            foreach ($postulaciones as $index => $postulacion) {
-                $show = route('postulaciones.show', $postulacion->id);
-
-                $buttons = "<input type='hidden' name='_token' id='csrf-token' value='" . Session::token() . "' />
-        <div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>";
-                switch (Auth::user()->getRoleNames()[0]) {
-                    case 'Administrador':
-                        if ($postulacion->asignados) {
-                            $asignados = json_decode($postulacion->asignados);
-                            in_array($postulacion->alumno_id,$asignados);
-                            if(in_array($postulacion->alumno_id,$asignados)){
-                                $buttons = $buttons . "<label class='label label-info'>Ocupó el puesto</label>";
-                            }else{
-                                if(intval($postulacion->vacantes) > count($asignados)){
-                                    $buttons = $buttons . "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
-                                }
+            $buttons = "<div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>";
+            switch ($userRoles[0] ?? '') {
+                case 'Administrador':
+                    if ($postulacion->asignados) {
+                        $asignados = json_decode($postulacion->asignados);
+                        if (in_array($postulacion->alumno_id, $asignados)) {
+                            $buttons .= "<label class='label label-info'>Ocupó el puesto</label>";
+                        } else {
+                            if (intval($postulacion->vacantes) > count($asignados)) {
+                                $buttons .= "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
                             }
-                        }else{
-                            $buttons = $buttons . "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
                         }
-                        break;
-                }
-                $buttons = $buttons . "</div>";
-
-                $nestedData['id'] = $postulacion->id;
-                $nestedData['oferta_laboral'] = $postulacion->oferta_laboral;
-                $nestedData['alumno'] = $postulacion->alumno;
-                $nestedData['fecha'] = $postulacion->created_at;
-                $nestedData['options'] = "<div>" . $buttons . "</div>";
-                $data[] = $nestedData;
+                    } else {
+                        $buttons .= "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
+                    }
+                    break;
             }
+            $buttons .= "</div>";
+
+            $data[] = [
+                'id' => $postulacion->id,
+                'oferta_laboral' => $postulacion->oferta_laboral,
+                'alumno' => $postulacion->alumno,
+                'fecha' => $postulacion->created_at,
+                'options' => $buttons,
+            ];
         }
 
-        $json_data = array(
-            "draw" => intval($request->input('draw')),
-            "recordsTotal" => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data" => $data
-        );
-
-        echo json_encode($json_data);
+        // Respuesta JSON
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => $query->count(),
+            'data' => $data,
+        ]);
     }
+
+
+    // public function postulaciones_all(Request $request)
+    // {
+    //     $columns = array(
+    //         0 => 'id',
+    //         1 => 'oferta_laboral',
+    //         2 => 'alumno',
+    //         3 => 'fecha',
+    //     );
+
+    //     $totalData = AlumnoOfertaLaboral::count();
+    //     $limit = $request->input('length');
+    //     $start = $request->input('start');
+    //     $order = $columns[$request->input('order.0.column')];
+    //     $dir = $request->input('order.0.dir');
+
+    //     if (empty($request->input('search.value'))) {
+    //         $postulaciones = DB::table('alumno_oferta_laboral')
+    //             ->join('alumno', 'alumno_oferta_laboral.alumno_id', 'alumno.id')
+    //             ->join('ofertas_laborales', 'alumno_oferta_laboral.oferta_laboral_id', 'ofertas_laborales.id')
+    //             ->select('alumno_oferta_laboral.*', 'alumno.nombres as alumno', 'ofertas_laborales.titulo as oferta_laboral', 'ofertas_laborales.alumno_id as asignados','ofertas_laborales.vacantes');
+    //     } else {
+    //         $search = $request->input('search.value');
+    //         $postulaciones = DB::table('alumno_oferta_laboral')
+    //             ->join('alumno', 'alumno_oferta_laboral.alumno_id', 'alumno.id')
+    //             ->join('ofertas_laborales', 'alumno_oferta_laboral.oferta_laboral_id', 'ofertas_laborales.id')
+    //             ->select('alumno_oferta_laboral.*', 'alumno.nombres as alumno', 'ofertas_laborales.titulo as oferta_laboral', 'ofertas_laborales.alumno_id as asignados','ofertas_laborales.vacantes')
+    //             ->where('ofertas_laborales.titulo', 'LIKE', "%{$search}%");
+    //     }
+    //     switch (Auth::user()->getRoleNames()[0]) {
+    //         case 'Egresado':
+    //             $alumno = Alumno::where('user_id', Auth::user()->id)->first();
+    //             $postulaciones = $postulaciones->where('alumno_oferta_laboral.alumno_id', $alumno->id);
+    //             break;
+    //     }
+
+    //     $totalFiltered = $postulaciones->count();
+    //     $postulaciones = $postulaciones->offset($start)
+    //         ->limit($limit)
+    //         ->orderBy($order, $dir)
+    //         ->get();
+
+    //     $data = array();
+    //     if (!empty($postulaciones)) {
+    //         foreach ($postulaciones as $index => $postulacion) {
+    //             $show = route('postulaciones.show', $postulacion->id);
+
+    //             $buttons = "<input type='hidden' name='_token' id='csrf-token' value='" . Session::token() . "' />
+    //     <div class='btn-group btn-group-sm' role='group' aria-label='Acciones'>";
+    //             switch (Auth::user()->getRoleNames()[0]) {
+    //                 case 'Administrador':
+    //                     if ($postulacion->asignados) {
+    //                         $asignados = json_decode($postulacion->asignados);
+    //                         in_array($postulacion->alumno_id,$asignados);
+    //                         if(in_array($postulacion->alumno_id,$asignados)){
+    //                             $buttons = $buttons . "<label class='label label-info'>Ocupó el puesto</label>";
+    //                         }else{
+    //                             if(intval($postulacion->vacantes) > count($asignados)){
+    //                                 $buttons = $buttons . "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
+    //                             }
+    //                         }
+    //                     }else{
+    //                         $buttons = $buttons . "<button type='button' class='btn btn-success asignar' data-id='{$postulacion->id}' data-alumno='{$postulacion->alumno}'><i class='fa fa-check'></i></button>";
+    //                     }
+    //                     break;
+    //             }
+    //             $buttons = $buttons . "</div>";
+
+    //             $nestedData['id'] = $postulacion->id;
+    //             $nestedData['oferta_laboral'] = $postulacion->oferta_laboral;
+    //             $nestedData['alumno'] = $postulacion->alumno;
+    //             $nestedData['fecha'] = $postulacion->created_at;
+    //             $nestedData['options'] = "<div>" . $buttons . "</div>";
+    //             $data[] = $nestedData;
+    //         }
+    //     }
+
+    //     $json_data = array(
+    //         "draw" => intval($request->input('draw')),
+    //         "recordsTotal" => intval($totalData),
+    //         "recordsFiltered" => intval($totalFiltered),
+    //         "data" => $data
+    //     );
+
+    //     echo json_encode($json_data);
+    // }
 
     /**
      * Registramos al alumno que ocupo la oferta laboral
