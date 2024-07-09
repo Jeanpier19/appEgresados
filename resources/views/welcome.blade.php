@@ -71,9 +71,11 @@
                                 style="max-height: 490px; object-fit: contain;" alt="{{ $slide->nombre }}">
                         </div>
                     @empty
-                        <h1 class="text-center text-white mx-5 px-5">Banners</h1>
-                        <br>
-                        <p class="text-white mx-5 px-5">No existen banners en este momento</p>
+                        <div class="text-center mx-5 px-5">
+                        <img class="" src="{{ asset('img/icons/banner.png') }}" alt="">
+                        <h1 class="text-white">Banners</h1>
+                        <p class="text-white">No existen banners en este momento</p>
+                    </div>
                     @endforelse
                 </div>
             </div>
