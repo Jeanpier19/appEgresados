@@ -44,7 +44,7 @@ class AlumnoOfertasCapacitacionController extends Controller
             ->join('ofertas_capacitaciones as ac', 'aoc.oferta_capacitaciones_id', '=', 'ac.id')
             ->join('curso as c', 'ac.curso_id', '=', 'c.id')
             ->join('entidades as e', 'c.entidad_id', '=', 'e.id')
-            ->select('aoc.id as idaoc', 'e.id as identidades', 'e.nombre as entidad', 'c.titulo as curso', DB::raw('concat(ifnull(p.paterno,"")," ",ifnull(p.materno,"")," ",p.nombres," - ",a.codigo) as inscrito'), 'aoc.vb', 'aoc.voucher as voucher', 'aoc.certificado as certificado', 'ac.fecha_fin as fecha_fin');
+            ->select('aoc.id as idaoc', 'e.id as identidades', 'e.nombre as entidad', 'c.titulo as curso', DB::raw('concat(ifnull(a.paterno,"")," ",ifnull(a.materno,"")," ",a.nombres," - ",a.codigo) as inscrito'), 'aoc.vb', 'aoc.voucher as voucher', 'aoc.certificado as certificado', 'ac.fecha_fin as fecha_fin');
 
 
         $totalFiltered = $entidades->count();

@@ -71,7 +71,9 @@
                                 style="max-height: 490px; object-fit: contain;" alt="{{ $slide->nombre }}">
                         </div>
                     @empty
-                        <h1 class="text-white mx-5 px-5">No hay banners</h1>
+                        <h1 class="text-center text-white mx-5 px-5">Banners</h1>
+                        <br>
+                        <p class="text-white mx-5 px-5">No existen banners en este momento</p>
                     @endforelse
                 </div>
             </div>
