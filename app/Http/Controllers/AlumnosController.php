@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AlumnosController extends Controller
 {
@@ -162,7 +164,7 @@ class AlumnosController extends Controller
     {
         //
     }
-
+    
     /**
      * Lista todos los alumnos
      *

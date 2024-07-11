@@ -2,16 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Condicion;
 use Illuminate\Http\Request;
 use App\Exports\EgresadosExport;
 use App\Imports\EgresadosNImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AlumnosExport;
+use App\Models\Escuela;
 
 class ImportExportController extends Controller
 {
     public function exportar()
     {
         return Excel::download(new EgresadosExport, 'egresados.xlsx');
+    }
+
+    public function excel(Request $request)
+    {
+        $nombre = 'alumnos';
+        if (isset($request->escuela_id)) {
+            $escuela = Escuela::find($request->escuela_id);
+            $nombre = $nombre . ' - ' . $escuela->nombre;
+        }
+        if (isset($request->condicion_id)) {
+            $condicion = Condicion::find($request->condicion_id);
+            $nombre = $nombre . ' - ' . $condicion->descripcion;
+        }
+        return Excel::download(new AlumnosExport($request), mb_strtoupper($nombre, 'UTF-8') . '.xlsx');
     }
 
     public function importar(Request $request)
