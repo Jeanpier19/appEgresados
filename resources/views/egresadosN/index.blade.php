@@ -258,8 +258,8 @@
                                                         <div class="form-row">
                                                             <div class="form-group col-md-6">
                                                                 <label for="genero">Facultad</label>
-                                                                <select class="form-control" id="facultad_id"
-                                                                    name="facultad_id">
+                                                                <select class="form-control" style="width: 400px"
+                                                                    id="facultad_id" name="facultad_id">
                                                                     @foreach ($facultades as $facultad)
                                                                         <option value="{{ $facultad->id }}"
                                                                             {{ $egresado->facultad_id == $facultad->id ? 'selected' : '' }}>
@@ -269,8 +269,8 @@
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="year">Escuela:</label>
-                                                                <select class="form-control" id="escuela_id"
-                                                                    name="escuela_id">
+                                                                <select class="form-control" style="width: 400px"
+                                                                    id="escuela_id" name="escuela_id">
                                                                     @foreach ($escuelas as $escuela)
                                                                         <option value="{{ $escuela->id }}"
                                                                             {{ $egresado->escuela_id == $escuela->id ? 'selected' : '' }}>
@@ -282,8 +282,8 @@
                                                         <div class="form-row">
                                                             <div class="form-group col-md-6">
                                                                 <label for="codigo_local">Código de Local</label>
-                                                                <select class="form-control" id="codigo_local"
-                                                                    name="codigo_local">
+                                                                <select class="form-control" style="width: auto"
+                                                                    id="codigo_local" name="codigo_local">
                                                                     @for ($i = 1; $i <= 200; $i++)
                                                                         @php
                                                                             // Generar el código en el formato SLXX
@@ -300,8 +300,8 @@
                                                             <div class="form-group col-md-6">
                                                                 <label for="grado_academico">Grado
                                                                     académico</label>
-                                                                <select class="form-control" id="grado_academico"
-                                                                    name="grado_academico">
+                                                                <select class="form-control" style="width: auto"
+                                                                    id="grado_academico" name="grado_academico">
                                                                     @foreach ($grados as $grado)
                                                                         <option value="{{ $grado->id }}"
                                                                             {{ $egresado->grado_academico == $grado->descripcion ? 'selected' : '' }}>
@@ -626,7 +626,7 @@
 @section('js')
     {{-- Para eliminar una imagen usando la confirmación del paquete swal --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
 
     @if (session('Importar') == 'Importado')
         <script>
@@ -670,7 +670,6 @@
         });
     </script>
     {{-- Usamos la clase nombrada como formulario-eliminar --}}
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -717,342 +716,70 @@
 
     <script type="text/JavaScript">
         $(document).ready(function () {
-                openTab();
-                $('#table tbody').on('click', '.delete-confirm', function () {
-                    let idalumno = $(this).attr('data-id');
-                    let url = '{!! route('egresado.destroy', 'idalumno') !!}';
-                    swal({
-                            title: '¿Estás seguro?',
-                            text: "¡No podrás revertir esto!",
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonClass: "btn-danger",
-                            confirmButtonText: '!Si, eliminar!',
-                            cancelButtonText: 'Cancelar',
-                            closeOnConfirm: false,
-                            closeOnCancel: false
-                        },
-                        function (isConfirm) {
-                            if (isConfirm) {
-                                $.ajaxSetup({
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    }
-                                });
-                                $.ajax({
-                                    type: 'POST',
-                                    url: url,
-                                    data: {
-                                        "_token": "{{ csrf_token() }}",
-                                        "_method": 'DELETE',
-                                        "id": idalumno,
-                                    },
-                                    dataType: 'JSON',
-                                    beforeSend: function () {
-                                    },
-                                    success: function (response) {
-                                        if (response.success) {
-                                            $.notify({
-                                                icon: 'font-icon font-icon-check-circle',
-                                                title: '<strong>¡Existoso!</strong>',
-                                                message: 'Alumno eliminada correctamente'
-                                            }, {
-                                                placement: {
-                                                    from: "top",
-                                                },
-                                                type: 'success'
-                                            });
-                                            tabla.ajax.reload();
-                                        } else {
-                                            $.notify({
-                                                icon: 'font-icon font-icon-warning',
-                                                title: '<strong>¡Error!</strong>',
-                                                message: 'Hubo un error al eliminar la Alumno'
-                                            }, {
-                                                placement: {
-                                                    from: "top",
-                                                },
-                                                type: 'danger'
-                                            });
-                                        }
-                                        swal.close()
-                                    },
-                                    error: function (err) {
-                                        console.log(err);
-                                    }
-                                });
-                            } else {
-                                swal({
-                                    title: "Cancelado",
-                                    text: "El registro está a salvo",
-                                    type: "error",
-                                    confirmButtonClass: "btn-danger"
-                                });
-                            }
-                        });
-                });
-
-                $('#table tbody').off('click').on('click', '.capacitacion', function () {
-                    id = $(this).attr('data-id');
-                    nombre = $(this).attr('data-nombre');
-                    $('#reporte-nombre').val(nombre);
-                    $('[href="#capacitacion"]').tab('show');
-                });
-
-                function openTab() {
-                    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                        var target = $(e.target).attr("href") // activated tab
-                        if (target === '#capacitacion') {
-                            let tabla = $('#table-cap').DataTable();
-                            tabla.destroy();
-                            tabla = $('#table-cap').DataTable({
-                                dom: 'Bfrtip',
-                                buttons: [{
-                                    extend: 'excel',
-                                    text: 'A Excel',
-                                    title: $('#reporte-nombre').val() + '_capacitaciones',
-                                    exportOptions: {
-                                        columns: [1, 2, 3, 4, 5]
-                                    }
-                                }],
-                                responsive: true,
-                                "processing": true,
-                                "serverSide": true,
-                                "autoWidth": true,
-                                language: {
-                                    "decimal": "",
-                                    "emptyTable": "No hay información",
-                                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-                                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
-                                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-                                    "infoPostFix": "",
-                                    "thousands": ",",
-                                    "lengthMenu": "Mostrar _MENU_ Entradas",
-                                    "loadingRecords": "Cargando...",
-                                    "processing": "Procesando...",
-                                    "search": "Buscar:",
-                                    "zeroRecords": "Sin resultados encontrados",
-                                    "No results matched": "No se encontraron resultados",
-                                    "paginate": {
-                                        "first": "Primero",
-                                        "last": "Ultimo",
-                                        "next": "Siguiente",
-                                        "previous": "Anterior"
-                                    },
-                                },
-                                "ajax": {
-                                    "url": "{{ route('egresado.get_capacitaciones') }}",
-                                    "dataType": "json",
-                                    "type": "POST",
-                                    "data": {
-                                        _token: "{{ csrf_token() }}",
-                                        "id": id
-                                    }
-                                },
-                                "columns": [{
-                                    "data": "idcapacitacion"
-                                },
-                                    {
-                                        "data": "descripcion"
-                                    },
-                                    {
-                                        "data": "curso"
-                                    },
-                                    {
-                                        "data": "estado"
-                                    },
-                                    {
-                                        "data": "vistobueno"
-                                    },
-                                    {
-                                        "data": "archivo"
-                                    },
-                                    {
-                                        "data": "opciones"
-                                    }
-                                ],
-                                "columnDefs": [{
-                                    "className": "text-center",
-                                    "targets": [0, 1]
-                                },
-                                    {
-                                        "bSortable": true,
-                                        "aTargets": [5, 6]
-                                    },
-                                ],
-                            });
-                        }
-
-                        if (target === '#experiencia_laboral') {
-                            let tabla2 = $('#table-exp').DataTable();
-                            tabla2.destroy();
-                            tabla2 = $('#table-exp').DataTable({
-                                dom: 'Bfrtip',
-                                buttons: [{
-                                    extend: 'excel',
-                                    text: 'A Excel',
-                                    title: $('#reporte-nombre').val() + '_experiencia_laboral',
-                                    exportOptions: {
-                                        columns: [1, 2, 3, 4, 5, 6, 7, 8]
-                                    }
-                                }],
-                                responsive: true,
-                                "processing": true,
-                                "serverSide": true,
-                                "autoWidth": true,
-                                language: {
-                                    "decimal": "",
-                                    "emptyTable": "No hay información",
-                                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-                                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
-                                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-                                    "infoPostFix": "",
-                                    "thousands": ",",
-                                    "lengthMenu": "Mostrar _MENU_ Entradas",
-                                    "loadingRecords": "Cargando...",
-                                    "processing": "Procesando...",
-                                    "search": "Buscar:",
-                                    "zeroRecords": "Sin resultados encontrados",
-                                    "No results matched": "No se encontraron resultados",
-                                    "paginate": {
-                                        "first": "Primero",
-                                        "last": "Ultimo",
-                                        "next": "Siguiente",
-                                        "previous": "Anterior"
-                                    },
-                                },
-                                "ajax": {
-                                    "url": "{{ route('egresado.get_experiencia') }}",
-                                    "dataType": "json",
-                                    "type": "POST",
-                                    "data": {
-                                        _token: "{{ csrf_token() }}",
-                                        "id": id
-                                    }
-                                },
-                                "columns": [{
-                                    "data": "idexperiencia"
-                                },
-                                    {
-                                        "data": "identidad"
-                                    },
-                                    {
-                                        "data": "cargo_laboral"
-                                    },
-                                    {
-                                        "data": "fecha_inicio"
-                                    },
-                                    {
-                                        "data": "fecha_salida"
-                                    },
-                                    {
-                                        "data": "reconocimientos"
-                                    },
-                                    {
-                                        "data": "nivel_satisfaccion"
-                                    },
-                                    {
-                                        "data": "vb"
-                                    },
-                                    {
-                                        "data": "archivo"
-                                    },
-                                    {
-                                        "data": "opciones"
-                                    }
-                                ],
-                                "columnDefs": [{
-                                    "className": "text-center",
-                                    "targets": [0, 7]
-                                },
-                                    {
-                                        "bSortable": true,
-                                        "aTargets": [5, 6]
-                                    },
-                                ],
-                            });
-                        }
-                    });
-                }
-                });
-            function validar(id, type) {
-                if (type == '1') {
-                    $.ajax({
-                        url: "{{ route('egresado.validar-experiencia') }}",
-                        dataType: "JSON",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            method: "POST",
-                            "id": id
-                        },
-                        success: function () {
-                            $('#table-exp').DataTable().ajax.reload();
-                        }
-                    });
-                }
-                if (type == '0') {
-                    console.log("validado")
-                    $.ajax({
-                        url: "{{ route('egresado.validar-capacitacion') }}",
-                        dataType: "JSON",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            method: "POST",
-                            "id": id
-                        },
-                        success: function () {
-                            $('#table-cap').DataTable().ajax.reload();
-                        }
-                    });
-                }
-            }
-
-            function invalidar(id, type) {
+            openTab();
+            $('#table tbody').on('click', '.delete-confirm', function () {
+                let idalumno = $(this).attr('data-id');
+                let url = '{!! route('egresado.destroy', 'idalumno') !!}';
                 swal({
-                        title: '¿Invalidar?',
+                        title: '¿Estás seguro?',
                         text: "¡No podrás revertir esto!",
                         type: 'warning',
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
-                        confirmButtonText: '!Si, invalidar!',
+                        confirmButtonText: '!Si, eliminar!',
                         cancelButtonText: 'Cancelar',
-                        closeOnConfirm: true,
+                        closeOnConfirm: false,
                         closeOnCancel: false
                     },
                     function (isConfirm) {
                         if (isConfirm) {
-                            if (type == '1') {
-                                $.ajax({
-                                    url: "{{ route('egresado.invalidar-experiencia') }}",
-                                    dataType: "JSON",
-                                    type: "DELETE",
-                                    data: {
-                                        _token: "{{ csrf_token() }}",
-                                        method: "DELETE",
-                                        "id": id
-                                    },
-                                    success: function () {
-                                        $('#table-exp').DataTable().ajax.reload();
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                            $.ajax({
+                                type: 'POST',
+                                url: url,
+                                data: {
+                                    "_token": "{{ csrf_token() }}",
+                                    "_method": 'DELETE',
+                                    "id": idalumno,
+                                },
+                                dataType: 'JSON',
+                                beforeSend: function () {
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        $.notify({
+                                            icon: 'font-icon font-icon-check-circle',
+                                            title: '<strong>¡Existoso!</strong>',
+                                            message: 'Alumno eliminada correctamente'
+                                        }, {
+                                            placement: {
+                                                from: "top",
+                                            },
+                                            type: 'success'
+                                        });
+                                        tabla.ajax.reload();
+                                    } else {
+                                        $.notify({
+                                            icon: 'font-icon font-icon-warning',
+                                            title: '<strong>¡Error!</strong>',
+                                            message: 'Hubo un error al eliminar la Alumno'
+                                        }, {
+                                            placement: {
+                                                from: "top",
+                                            },
+                                            type: 'danger'
+                                        });
                                     }
-                                });
-                            }
-                            if (type == '0') {
-                                $.ajax({
-                                    url: "{{ route('egresado.invalidar-capacitacion') }}",
-                                    dataType: "JSON",
-                                    type: "DELETE",
-                                    data: {
-                                        _token: "{{ csrf_token() }}",
-                                        method: "DELETE",
-                                        "id": id
-                                    },
-                                    success: function () {
-                                        $('#table-cap').DataTable().ajax.reload();
-                                    }
-                                });
-                            }
+                                    swal.close()
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
                         } else {
                             swal({
                                 title: "Cancelado",
@@ -1062,8 +789,280 @@
                             });
                         }
                     });
+            });
+
+            $('#table tbody').off('click').on('click', '.capacitacion', function () {
+                id = $(this).attr('data-id');
+                nombre = $(this).attr('data-nombre');
+                $('#reporte-nombre').val(nombre);
+                $('[href="#capacitacion"]').tab('show');
+            });
+
+            function openTab() {
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    var target = $(e.target).attr("href") // activated tab
+                    if (target === '#capacitacion') {
+                        let tabla = $('#table-cap').DataTable();
+                        tabla.destroy();
+                        tabla = $('#table-cap').DataTable({
+                            dom: 'Bfrtip',
+                            buttons: [{
+                                extend: 'excel',
+                                text: 'A Excel',
+                                title: $('#reporte-nombre').val() + '_capacitaciones',
+                                exportOptions: {
+                                    columns: [1, 2, 3, 4, 5]
+                                }
+                            }],
+                            responsive: true,
+                            "processing": true,
+                            "serverSide": true,
+                            "autoWidth": true,
+                            language: {
+                                "decimal": "",
+                                "emptyTable": "No hay información",
+                                "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                                "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                                "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                                "infoPostFix": "",
+                                "thousands": ",",
+                                "lengthMenu": "Mostrar _MENU_ Entradas",
+                                "loadingRecords": "Cargando...",
+                                "processing": "Procesando...",
+                                "search": "Buscar:",
+                                "zeroRecords": "Sin resultados encontrados",
+                                "No results matched": "No se encontraron resultados",
+                                "paginate": {
+                                    "first": "Primero",
+                                    "last": "Ultimo",
+                                    "next": "Siguiente",
+                                    "previous": "Anterior"
+                                },
+                            },
+                            "ajax": {
+                                "url": "{{ route('egresado.get_capacitaciones') }}",
+                                "dataType": "json",
+                                "type": "POST",
+                                "data": {
+                                    _token: "{{ csrf_token() }}",
+                                    "id": id
+                                }
+                            },
+                            "columns": [{
+                                "data": "idcapacitacion"
+                            },
+                                {
+                                    "data": "descripcion"
+                                },
+                                {
+                                    "data": "curso"
+                                },
+                                {
+                                    "data": "estado"
+                                },
+                                {
+                                    "data": "vistobueno"
+                                },
+                                {
+                                    "data": "archivo"
+                                },
+                                {
+                                    "data": "opciones"
+                                }
+                            ],
+                            "columnDefs": [{
+                                "className": "text-center",
+                                "targets": [0, 1]
+                            },
+                                {
+                                    "bSortable": true,
+                                    "aTargets": [5, 6]
+                                },
+                            ],
+                        });
+                    }
+
+                    if (target === '#experiencia_laboral') {
+                        let tabla2 = $('#table-exp').DataTable();
+                        tabla2.destroy();
+                        tabla2 = $('#table-exp').DataTable({
+                            dom: 'Bfrtip',
+                            buttons: [{
+                                extend: 'excel',
+                                text: 'A Excel',
+                                title: $('#reporte-nombre').val() + '_experiencia_laboral',
+                                exportOptions: {
+                                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                                }
+                            }],
+                            responsive: true,
+                            "processing": true,
+                            "serverSide": true,
+                            "autoWidth": true,
+                            language: {
+                                "decimal": "",
+                                "emptyTable": "No hay información",
+                                "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                                "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                                "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                                "infoPostFix": "",
+                                "thousands": ",",
+                                "lengthMenu": "Mostrar _MENU_ Entradas",
+                                "loadingRecords": "Cargando...",
+                                "processing": "Procesando...",
+                                "search": "Buscar:",
+                                "zeroRecords": "Sin resultados encontrados",
+                                "No results matched": "No se encontraron resultados",
+                                "paginate": {
+                                    "first": "Primero",
+                                    "last": "Ultimo",
+                                    "next": "Siguiente",
+                                    "previous": "Anterior"
+                                },
+                            },
+                            "ajax": {
+                                "url": "{{ route('egresado.get_experiencia') }}",
+                                "dataType": "json",
+                                "type": "POST",
+                                "data": {
+                                    _token: "{{ csrf_token() }}",
+                                    "id": id
+                                }
+                            },
+                            "columns": [{
+                                "data": "idexperiencia"
+                            },
+                                {
+                                    "data": "identidad"
+                                },
+                                {
+                                    "data": "cargo_laboral"
+                                },
+                                {
+                                    "data": "fecha_inicio"
+                                },
+                                {
+                                    "data": "fecha_salida"
+                                },
+                                {
+                                    "data": "reconocimientos"
+                                },
+                                {
+                                    "data": "nivel_satisfaccion"
+                                },
+                                {
+                                    "data": "vb"
+                                },
+                                {
+                                    "data": "archivo"
+                                },
+                                {
+                                    "data": "opciones"
+                                }
+                            ],
+                            "columnDefs": [{
+                                "className": "text-center",
+                                "targets": [0, 7]
+                            },
+                                {
+                                    "bSortable": true,
+                                    "aTargets": [5, 6]
+                                },
+                            ],
+                        });
+                    }
+                });
             }
-        </script>
+            });
+        function validar(id, type) {
+            if (type == '1') {
+                $.ajax({
+                    url: "{{ route('egresado.validar-experiencia') }}",
+                    dataType: "JSON",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        method: "POST",
+                        "id": id
+                    },
+                    success: function () {
+                        $('#table-exp').DataTable().ajax.reload();
+                    }
+                });
+            }
+            if (type == '0') {
+                console.log("validado")
+                $.ajax({
+                    url: "{{ route('egresado.validar-capacitacion') }}",
+                    dataType: "JSON",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        method: "POST",
+                        "id": id
+                    },
+                    success: function () {
+                        $('#table-cap').DataTable().ajax.reload();
+                    }
+                });
+            }
+        }
+
+        function invalidar(id, type) {
+            swal({
+                    title: '¿Invalidar?',
+                    text: "¡No podrás revertir esto!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: '!Si, invalidar!',
+                    cancelButtonText: 'Cancelar',
+                    closeOnConfirm: true,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        if (type == '1') {
+                            $.ajax({
+                                url: "{{ route('egresado.invalidar-experiencia') }}",
+                                dataType: "JSON",
+                                type: "DELETE",
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                    method: "DELETE",
+                                    "id": id
+                                },
+                                success: function () {
+                                    $('#table-exp').DataTable().ajax.reload();
+                                }
+                            });
+                        }
+                        if (type == '0') {
+                            $.ajax({
+                                url: "{{ route('egresado.invalidar-capacitacion') }}",
+                                dataType: "JSON",
+                                type: "DELETE",
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                    method: "DELETE",
+                                    "id": id
+                                },
+                                success: function () {
+                                    $('#table-cap').DataTable().ajax.reload();
+                                }
+                            });
+                        }
+                    } else {
+                        swal({
+                            title: "Cancelado",
+                            text: "El registro está a salvo",
+                            type: "error",
+                            confirmButtonClass: "btn-danger"
+                        });
+                    }
+                });
+        }
+    </script>
 
 @stop
 
