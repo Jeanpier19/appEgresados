@@ -59,7 +59,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
                             <strong>Rol:</strong>
-                            {!! Form::select('roles[]', $roles,$userRole, array('class' => 'bootstrap-select','multiple','title'=>'Elige uno de los siguientes...')) !!}
+                            {!! Form::select('roles[]', $roles,$userRole, array('class' => 'bootstrap-select', 'title'=>'Elige uno de los siguientes...')) !!}
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2 col-md-2">
