@@ -21,17 +21,17 @@
                 @endif
                 <table id="table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
-                    <tr>
-                        <th>N°</th>
-                        <th>Oferta Laboral</th>
-                        @switch (Auth::user()->getRoleNames()[0])
-                            @case('Administrador')
-                            <th>Alumno</th>
-                            @break
-                        @endswitch
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
+                        <tr>
+                            <th>N°</th>
+                            <th>Oferta Laboral</th>
+                            @switch (Auth::user()->getRoleNames()[0])
+                                @case('Administrador')
+                                    <th>Alumno</th>
+                                @break
+                            @endswitch
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -41,81 +41,96 @@
 @endsection
 @section('js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            let tabla = $('#table').DataTable(
-                {
-                    responsive: true,
-                    "processing": true,
-                    "serverSide": true,
-                    language: {
-                        "decimal": "",
-                        "emptyTable": "No hay información",
-                        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-                        "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
-                        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-                        "infoPostFix": "",
-                        "thousands": ",",
-                        "lengthMenu": "Mostrar _MENU_ Entradas",
-                        "loadingRecords": "Cargando...",
-                        "processing": "Procesando...",
-                        "search": "Buscar:",
-                        "zeroRecords": "Sin resultados encontrados",
-                        "No results matched": "No se encontraron resultados",
-                        "paginate": {
-                            "first": "Primero",
-                            "last": "Ultimo",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
-                        },
+        $(document).ready(function() {
+            let tabla = $('#table').DataTable({
+                responsive: true,
+                "processing": true,
+                "serverSide": true,
+                language: {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "No results matched": "No se encontraron resultados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
                     },
-                    "ajax": {
-                        "url": "{{ route('postulaciones.all') }}",
-                        "dataType": "json",
-                        "type": "POST",
-                        "data": {
-                            _token: "{{csrf_token()}}"
-                        }
+                },
+                "ajax": {
+                    "url": "{{ route('postulaciones.all') }}",
+                    "dataType": "json",
+                    "type": "POST",
+                    "data": {
+                        _token: "{{ csrf_token() }}"
+                    }
+                },
+                "columns": [{
+                        "data": "id"
                     },
-                    "columns": [
-                        {"data": "id"},
-                        {"data": "oferta_laboral"},
-                        @switch (Auth::user()->getRoleNames()[0])
-                            @case('Administrador')
-                                {"data": "alumno"},
+                    {
+                        "data": "oferta_laboral"
+                    },
+                    @switch (Auth::user()->getRoleNames()[0])
+                        @case('Administrador') {
+                                "data": "alumno"
+                            },
                             @break
-                        @endswitch
-                        {"data": "fecha"},
-                        {"data": "options"}],
-                    "columnDefs": [
-                            @switch (Auth::user()->getRoleNames()[0])
-                            @case('Administrador')
-                            {"className": "text-center", "targets": [0, 3, 4]},
-                            {"bSortable": false, "aTargets": [4]},
+                    @endswitch {
+                        "data": "fecha"
+                    },
+                    {
+                        "data": "options"
+                    }
+                ],
+                "columnDefs": [
+                    @switch (Auth::user()->getRoleNames()[0])
+                        @case('Administrador') {
+                                "className": "text-center",
+                                "targets": [0, 3, 4]
+                            }, {
+                                "bSortable": false,
+                                "aTargets": [4]
+                            },
                             @break
-                            @case('Egresado')
-                            {"className": "text-center", "targets": [0,2, 3]},
-                            {"bSortable": false, "aTargets": [3]},
-                            @break
-                            @endswitch
 
-                    ],
-                }
-            );
-            $('#table tbody').on('click', '.asignar', function () {
+                        @case('Egresado') {
+                                "className": "text-center",
+                                "targets": [0, 2, 3]
+                            }, {
+                                "bSortable": false,
+                                "aTargets": [3]
+                            },
+                            @break
+                    @endswitch
+
+                ],
+            });
+            $('#table tbody').on('click', '.asignar', function() {
                 let id = $(this).attr('data-id');
                 let nombre = $(this).attr('data-alumno');
                 swal({
-                        title: '¿El alumno '+nombre+' ocupó esta oferta laboral?',
+                        title: '¿El alumno ' + nombre + ' ocupó esta oferta laboral?',
                         text: "¡Se actualizará automáticamente en la experiencia laboral del alumno!",
                         type: 'warning',
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
-                        confirmButtonText: '!Si, registrar!',
+                        confirmButtonText: '!Sí, registrar!',
                         cancelButtonText: 'Cancelar',
                         closeOnConfirm: false,
                         closeOnCancel: false
                     },
-                    function (isConfirm) {
+                    function(isConfirm) {
                         if (isConfirm) {
                             $.ajaxSetup({
                                 headers: {
@@ -123,26 +138,29 @@
                                 }
                             });
                             $.ajax({
-                                "url": "{{ route('postulaciones.asignar') }}",
-                                "dataType": "json",
-                                "type": "POST",
-                                "data": {
-                                    _token: "{{csrf_token()}}",
+                                url: "{{ route('postulaciones.asignar') }}",
+                                dataType: "json",
+                                type: "POST",
+                                data: {
+                                    _token: "{{ csrf_token() }}",
                                     postulacion_id: id
                                 },
-                                beforeSend: function () {
+                                beforeSend: function() {
+                                    // Puedes añadir un loader aquí si quieres
                                 },
-                                success: function (response) {
+                                success: function(response) {
                                     if (response.success) {
                                         $.notify({
                                             icon: 'font-icon font-icon-check-circle',
-                                            title: '<strong>¡Existoso!</strong>',
+                                            title: '<strong>¡Exitoso!</strong>',
                                             message: 'Registrado correctamente'
                                         }, {
                                             placement: {
                                                 from: "top",
+                                                align: "right"
                                             },
-                                            type: 'success'
+                                            type: 'success',
+                                            delay: 2000
                                         });
                                         tabla.ajax.reload();
                                     } else {
@@ -153,18 +171,33 @@
                                         }, {
                                             placement: {
                                                 from: "top",
+                                                align: "right"
                                             },
-                                            type: 'danger'
+                                            type: 'danger',
+                                            delay: 2000
                                         });
                                     }
-                                    swal.close()
+                                    swal.close();
                                 },
-                                error: function (err) {
+                                error: function(err) {
                                     console.log(err);
+                                    $.notify({
+                                        icon: 'font-icon font-icon-warning',
+                                        title: '<strong>¡Error!</strong>',
+                                        message: 'Hubo un error al realizar la solicitud.'
+                                    }, {
+                                        placement: {
+                                            from: "top",
+                                            align: "right"
+                                        },
+                                        type: 'danger',
+                                        delay: 2000
+                                    });
+                                    swal.close();
                                 }
                             });
                         } else {
-                            console.log(err);
+                            swal.close();
                         }
                     });
             });

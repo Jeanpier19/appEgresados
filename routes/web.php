@@ -64,10 +64,11 @@ Route::get('/contactos', function () {
 })->name('contactos');
 
 
-// EXPORTAR E IMPORTAR EGRESADOS:
+// EXPORTAR E IMPORTAR EGRESADOS Y EXPORTAR ALUMNOS:
 
 Route::get('/export','ImportExportController@exportar')->name('export');
 Route::post('/import','ImportExportController@importar')->name('importar');
+Route::get('/alumnos/excel', 'ImportExportController@excel')->name('exportAlumno');
 
 // .....................................................
 
