@@ -148,7 +148,7 @@
                                                                     name="tipo_documento">
                                                                     @foreach ($tip_doc as $index => $item_doc)
                                                                         <option value="{{ $index }}"
-                                                                            {{ $egresado->tipo_documento == $index ? 'selected' : '' }}>
+                                                                            {{ $egresado->tipo_documento == $item_doc ? 'selected' : '' }}>
                                                                             {{ $item_doc }}</option>
                                                                     @endforeach
                                                                 </select>
