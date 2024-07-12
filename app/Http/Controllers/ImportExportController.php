@@ -12,9 +12,18 @@ use App\Models\Escuela;
 
 class ImportExportController extends Controller
 {
-    public function exportar()
+    public function exportar(Request $request)
     {
-        return Excel::download(new EgresadosExport, 'egresados.xlsx');
+        $nombre = 'egresados';
+        if (isset($request->escuela_id)) {
+            $escuela = Escuela::find($request->escuela_id);
+            $nombre = $nombre . ' - ' . $escuela->nombre;
+        }
+        if (isset($request->condicion_id)) {
+            $condicion = Condicion::find($request->condicion_id);
+            $nombre = $nombre . ' - ' . $condicion->descripcion;
+        }
+        return Excel::download(new EgresadosExport($request), mb_strtoupper($nombre, 'UTF-8') . '.xlsx');
     }
 
     public function excel(Request $request)

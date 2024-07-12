@@ -63,9 +63,6 @@
                                 <button id="excel" type="button" class="btn btn-success btn-sm"><i
                                         class="fa fa-file-excel-o"></i> Excel
                                 </button>
-                                {{-- <button id="pdf" type="button" class="btn btn-danger btn-sm"><i
-                                        class="fa fa-file-pdf-o"></i> PDF
-                                </button> --}}
                             </div>
                         </div>
                     </form>
@@ -275,10 +272,6 @@
                     $('#reporte').attr('action', '{{route('exportAlumno')}}');
                     $('#reporte').submit();
                 });
-                // $('#pdf').on('click', function () {
-                //     $('#reporte').attr('action', '{{route('convenios.pdf')}}');
-                //     $('#reporte').submit();
-                // });
             }
         });
     </script>

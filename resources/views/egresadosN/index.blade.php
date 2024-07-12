@@ -56,6 +56,30 @@
                         <p>{{ $message }}</p>
                     </div>
                 @endif
+                <div class="row">
+                    <form id="reporte" method="GET" action="{{route('export')}}" target="_blank">
+                        <div class="col-xs-12 col-md-3">
+                            <strong>Condición:</strong>
+                            {{ Form::select('condicion_id',$grados->pluck('descripcion','id'), null, array('id' => 'condicion_id','class' => 'selectpicker','title'=>'Seleccione...','data-container'=>'body','data-width'=>'100%','data-live-search'=>'true','multiple')) }}
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <strong>Facultad:</strong>
+                            {{ Form::select('facultad_id',$facultades->pluck('nombre','id'), null, array('id' => 'facultad_id','class' => 'selectpicker','title'=>'Seleccione...','data-container'=>'body','data-width'=>'100%','data-live-search'=>'true','data-max-options'=>'1','multiple')) }}
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <strong>Escuela:</strong>
+                            {{ Form::select('escuela_id',$escuelas->pluck('nombre','id'), null, array('id' => 'escuela_id','class' => 'selectpicker','title'=>'Seleccione...','data-container'=>'body','data-width'=>'100%','data-live-search'=>'true','data-max-options'=>'1','multiple')) }}
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="form-group">
+                                <strong>Reporte:</strong><br>
+                                <button id="excel" type="button" class="btn btn-success btn-sm"><i
+                                        class="fa fa-file-excel-o"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <table id="table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead class="text-center align-middle">
                         <tr>
@@ -643,6 +667,7 @@
     <script src="{{ asset('startui/js/lib/datatables-net/datatables.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            reporte();
             $('#table').DataTable({
                 responsive: true,
                 pageLength: 10, // Número de filas por página
@@ -667,6 +692,12 @@
                     }
                 }
             });
+            function reporte() {
+                $('#excel').on('click', function () {
+                    $('#reporte').attr('action', '{{route('export')}}');
+                    $('#reporte').submit();
+                });
+            }
         });
     </script>
     {{-- Usamos la clase nombrada como formulario-eliminar --}}
