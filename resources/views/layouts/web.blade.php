@@ -28,6 +28,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;family=Open+Sans:ital@0;1&amp;display=swap"
         rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Font Favicon -->
     <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}">
     <style>
@@ -93,19 +94,6 @@
                         <p>© 2024 <span class="template-name">UNASAM</span>. Derechos reservados</p>
                     </div>
                     <div class="col-md-5">
-                        <ul class="footer_social">
-                            <li style="color: #000;">Síguenos:</li>
-                            <li><a href="https://twitter.com/DsceUnasam96090/" class="twitter" target="_blank"><i
-                                        class="bi bi-twitter"></i></a></li>
-                            <li><a href="https://www.instagram.com/dscegresados/"class="instagram" target="_blank"><i
-                                        class="bi bi-instagram"></i></a></li>
-                            <li><a href="https://www.facebook.com/profile.php?id=100076293338986" class="facebook"
-                                    target="_blank"><i class="bi bi-facebook"></i></a></li>
-                            <li><a href="https://www.youtube.com/channel/UCP89yg9JPKA3Gy0rpuuAn9A/" class="youtube"
-                                    target="_blank"><i class="bi bi-youtube"></i></a></li>
-                        </ul>
-                    </div>
-                    <div class="col-12">
                         <ul class="text-left">
                             <li>Contáctanos:</li>
                             <li><img src="{{asset('img/icons/contacts.png')}}" style="height: 25px"> <a style="color: #3d59d3;" href="{{route('contactos')}}">Envía tus comentarios aquí</a></li>

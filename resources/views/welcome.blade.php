@@ -32,28 +32,54 @@
             background-position: center;
             z-index: -1;
         }
+
+        .social-bar {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .social-bar a {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-bar a:hover {
+            background-color: #555;
+            color: #e2197e;
+        }
+
+        .facebook {
+            background-color: #3b5998;
+        }
+
+        .twitter {
+            background-color: #1da1f2;
+        }
+
+        .instagram {
+            background-color: #e2197e;
+        }
+        .youtube {
+            background-color: #e4405f;
+        }
+        .social-bar a i:hover {
+            color: #e2197e;
+        }
     </style>
 @endsection
 
 @section('content')
-    <!-- Banner -->
-    {{-- <section id="Home" class="home-section" id="home">
-        <div class="home-section-overlay"></div>
-        <div class="container home-wrapper"> --}}
-    <!--begin row -->
-    {{-- <div class="row align-items-center"> --}}
-    <!--begin col-md-8-->
-    {{-- <div class="col-md-8 mx-auto text-center">
-                    <h1>Bienvenido</h1>
-                    <p class="hero-text"></p>
-                    <a href="#about" class="arrow-down scrool"><i class="bi bi-chevron-double-down"></i></a>
-                </div> --}}
-    <!--end col-md-8-->
-    {{-- </div> --}}
-    <!--end row -->
-    {{-- </div> --}}
-    {{-- </section> --}}
-    {{-- Carousel --}}
     <section class="carousel-container">
         <div id="carouselExample" class="carousel slide">
             <div class="carousel-inner d-flex justify-content-center">
@@ -72,10 +98,10 @@
                         </div>
                     @empty
                         <div class="text-center mx-5 px-5">
-                        <img class="" src="{{ asset('img/icons/banner.png') }}" alt="">
-                        <h1 class="text-white">Banners</h1>
-                        <p class="text-white">No existen banners en este momento</p>
-                    </div>
+                            <img class="" src="{{ asset('img/icons/banner.png') }}" alt="">
+                            <h1 class="text-white">Banners</h1>
+                            <p class="text-white">No existen banners en este momento</p>
+                        </div>
                     @endforelse
                 </div>
             </div>
@@ -89,6 +115,24 @@
             </button>
         </div>
     </section>
+
+    <!-- Redes Sociales Barra Flotante -->
+    <div class="social-bar">
+        <a href="https://www.facebook.com/profile.php?id=100076293338986" target="_blank" class="facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://twitter.com/DsceUnasam96090/" target="_blank" class="twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/dscegresados/" target="_blank" class="instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UCP89yg9JPKA3Gy0rpuuAn9A/" target="_blank" class="youtube">
+            <i class="fab fa-youtube"></i>
+        </a>
+        <!-- Agrega más redes sociales según sea necesario -->
+    </div>
+    <!-- Fin Redes Sociales Barra Flotante -->
 
     <!-- Nosotros -->
     <section class="section-grey" id="about">
@@ -217,7 +261,8 @@
 
                     <i class="bi bi-award-fill"></i>
 
-                    <p class="fun-facts-title"><span class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
+                    <p class="fun-facts-title"><span
+                            class="facts-numbers">{{ $cantidad_magisteres }}</span><br>Magísteres
                     </p>
 
                 </div>
