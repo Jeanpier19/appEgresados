@@ -10,7 +10,7 @@
                     <img src="{{asset('img/icons/exam.png')}}" alt="oferta laboral" width="50px">
                     <h2>Encuesta</h2>
                 </div>
-                @if($encuesta)
+                @if($encuesta->estado)
                     <div class="col-md-12">
                         <div class="main-services">
                             <i class="bi bi-file-earmark-check-fill green"></i>
