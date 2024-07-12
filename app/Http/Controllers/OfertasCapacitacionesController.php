@@ -72,7 +72,7 @@ class OfertasCapacitacionesController extends Controller
             ->first();
 
         $alumno_id = $alumno ? $alumno->id : null;
-        
+
         $alumno_ofertas = AlumnoOfertasCapacitacion::get();
         $var = 0;
         $voucher = 0;
@@ -87,13 +87,14 @@ class OfertasCapacitacionesController extends Controller
             "Muy Malo" => "Muy Malo"
         );
         return view('oferta_capacitacion.registro', [
-            'ofertas_capacitaciones' => $ofertas_capacitaciones, 
+            'ofertas_capacitaciones' => $ofertas_capacitaciones,
             'alumno_id' => $alumno_id[0],
             'alumno_ofertas' => $alumno_ofertas,
             'var' => $var, 'voucher' => $voucher,
             'vb' => $vb, 'apreciacion' => $apreciacion,
             'vb_apreciacion' => $vb_apreciacion,
-            'certificado' => $certificado]);
+            'certificado' => $certificado
+        ]);
     }
 
 
@@ -231,7 +232,6 @@ class OfertasCapacitacionesController extends Controller
 
         echo json_encode($json_data);
     }
-
     public function save(Request $request)
     {
         $this->validate($request, [
@@ -247,7 +247,9 @@ class OfertasCapacitacionesController extends Controller
             'fecha_inicio' => '',
             'fecha_fin' => ''
         ]);
+
         $input = $request->all();
+
         if (!empty($input['identidad'])) {
             $curso = Curso::create([
                 'entidad_id' => $input['identidad'],
@@ -257,34 +259,37 @@ class OfertasCapacitacionesController extends Controller
                 'horas' => $input['horas'],
                 'idarea' => $input['idarea']
             ]);
-            //
-            $file = array_key_exists("file", $input) ? $input['file'] : null;
+
+            $file = $request->file('file');
+
             if ($file) {
                 $file_path = time() . $file->getClientOriginalName();
-                try {
-                    Storage::disk('imagenOfertas')->put($file_path, File::get($file));
-                } catch (Exception $e) {
-                }
+                // Mover el archivo a la carpeta public
+                $file->move(public_path('recomendacionEvidencia'), $file_path);
             } else {
                 $file_path = null;
             }
-            //
+
             OfertasCapacitaciones::create([
                 'curso_id' => $curso->id,
                 'oferta_descripcion' => $input['descripcion_oferta'],
                 'precio' => $input['precio'],
                 'fecha_inicio' => $input['fecha_inicio'],
                 'fecha_fin' => $input['fecha_fin'],
-                'imagen' => 'imagenOfertas/' . $file_path
+                'imagen' => 'recomendacionEvidencia/' . $file_path
             ]);
+
+            return redirect()->route('ofertas_capacitaciones.index')
+                ->with('success', 'Oferta de Capacitación creada correctamente');
         }
-        return redirect()->route('ofertas_capacitaciones.index')
-            ->with('success', 'Oferta de Capacitación creado correctamente');
+
+        return redirect()->back()
+            ->withInput()
+            ->withErrors(['error' => 'Error al procesar la solicitud']);
     }
 
     public function update(Request $request)
     {
-        //dd($request->all());
         $this->validate($request, [
             'idoferta' => 'required',
             'idcurso' => 'required',
@@ -300,7 +305,9 @@ class OfertasCapacitacionesController extends Controller
             'fecha_inicio' => '',
             'fecha_fin' => ''
         ]);
+
         $input = $request->all();
+
         if (!empty($input['identidad']) && !empty($input['idoferta'])) {
             $curso = Curso::findOrFail($input['idcurso']);
             $curso->update([
@@ -311,32 +318,43 @@ class OfertasCapacitacionesController extends Controller
                 'horas' => $input['horas'],
                 'idarea' => $input['idarea']
             ]);
-            //
-            $ofertas = OfertasCapacitaciones::findorFail($input['idoferta']);
-            Storage::disk('imagenOfertas')->delete($ofertas->imagen);
 
-            $file = array_key_exists("file", $input) ? $input['file'] : null;
+            $oferta = OfertasCapacitaciones::findOrFail($input['idoferta']);
+            // Eliminar la imagen anterior si existe
+            $file_path = $oferta->imagen;
+            if ($file_path) {
+                $file_path = str_replace('imagenOfertas/', '', $file_path); // Obtener solo el nombre del archivo
+                if (file_exists(public_path('recomendacionEvidencia/' . $file_path))) {
+                    unlink(public_path('recomendacionEvidencia/' . $file_path));
+                }
+            }
+
+            $file = $request->file('file');
+
             if ($file) {
                 $file_path = time() . $file->getClientOriginalName();
-                try {
-                    Storage::disk('imagenOfertas')->put($file_path, File::get($file));
-                } catch (Exception $e) {
-                }
+                // Mover el archivo a la carpeta public
+                $file->move(public_path('recomendacionEvidencia'), $file_path);
             } else {
                 $file_path = null;
             }
-            //
-            $ofertas->update([
+
+            $oferta->update([
                 'curso_id' => $curso->id,
                 'oferta_descripcion' => $input['descripcion_oferta'],
                 'precio' => $input['precio'],
-                'imagen' => 'imagenOfertas/' . $file_path,
+                'imagen' => 'recomendacionEvidencia/' . $file_path,
                 'fecha_inicio' => $input['fecha_inicio'],
                 'fecha_fin' => $input['fecha_fin']
             ]);
+
+            return redirect()->route('ofertas_capacitaciones.index')
+                ->with('success', 'Oferta de Capacitación actualizada correctamente');
         }
-        return redirect()->route('ofertas_capacitaciones.index')
-            ->with('success', 'Oferta de Capacitación actualizado correctamente');
+
+        return redirect()->back()
+            ->withInput()
+            ->withErrors(['error' => 'Error al procesar la solicitud']);
     }
 
     public function destroy(Request $request)
@@ -416,13 +434,13 @@ class OfertasCapacitacionesController extends Controller
     {
         try {
             $file = $request->file('file');
-            $nombre = str_replace(' ', '-', strtolower($request->nombre)) . '.' . $file->getClientOriginalExtension();
+            $nombre = date('YmdHis') . '.' . $file->getClientOriginalExtension();
 
             // Mueve el archivo directamente a la carpeta public/img
-            $file->move(public_path('img/recomendacionEvidencia'), $nombre);
+            $file->move(public_path('recomendacionEvidencia'), $nombre);
 
             // Devuelve la URL completa de la imagen para su uso posterior
-            return response()->json(['logo' => asset('img/recomendacionEvidencia/' . $nombre), 'success' => 'success']);
+            return response()->json(['imagen' => 'recomendacionEvidencia/' . $nombre, 'success' => 'success']);
         } catch (\Exception $e) {
             // Manejar cualquier excepción que pueda ocurrir durante el proceso
             // Puedes agregar un registro de error o un mensaje de error aquí si es necesario

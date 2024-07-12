@@ -21,7 +21,7 @@
                                     <div class="popup-gallery">
                                         <a href="@if(strtotime($ofertas->fecha_fin) < strtotime(date("d-m-Y H:i:00", time()))) # @else {{route('ofertas_capacitaciones.registro')}} @endif">
                                             <img
-                                                src="@if($ofertas->imagen) {{asset($ofertas->imagen)}} @else {{asset('img/bg2.jpeg')}} @endif"
+                                                src="@if($ofertas->imagen) {{asset($ofertas->imagen)}} @else {{asset('img/logotipo-large.png')}} @endif"
                                                 class="width-100" alt="oferta">
                                             <span class="eye-wrapper2"><i class="bi bi-link-45deg"></i></span>
                                         </a>
