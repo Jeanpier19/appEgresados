@@ -204,7 +204,9 @@
                             @endif
                         @endforeach
                     @else
-                        <p>No se encontró la escuela del usuario.</p>
+                        <div class="whatsapp-bar">
+                            <a class="whatsapp-link" style="color: #fff">Grupo de whatsapp no encontrado</a>
+                        </div>
                     @endif
                 </div>
             @break
