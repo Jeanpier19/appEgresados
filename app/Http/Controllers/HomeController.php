@@ -58,8 +58,8 @@ class HomeController extends Controller
         $escuela_nombre = $escuela ? $escuela->nombre : null; // Get the name or null if no result
 
         $grupos_whatsapp = [
-            'ADMINISTRACIÓN' => 'https://chat.whatsapp.com/tuCodigoDeInvitacion',
-            'TURISMO' => 'https://chat.whatsapp.com/tuCodigoDeInvitacion',
+            'ADMINISTRACIÓN' => 'https://chat.whatsapp.com/Administracion',
+            'TURISMO' => 'https://chat.whatsapp.com/Turismo',
             'ESTADÍSTICA E INFORMÁTICA' => 'https://chat.whatsapp.com/G1Kf0h7Ax7A7KNxGPkqZq8',
             'MATEMÁTICA' => 'https://chat.whatsapp.com/KZOLi2zIWhB1TfLQDt64qM',
             'INGENIERÍA DE SISTEMAS E INFORMÁTICA' => 'https://chat.whatsapp.com/J57YFHPEl03IR99bLhdYV1',
@@ -76,7 +76,7 @@ class HomeController extends Controller
             'EDUCACIÓN ESPECIALIDAD DE PRIMARIA Y EDUCACIÓN BILINGÜE INTERCULTURAL' => 'https://chat.whatsapp.com/L9M6vniPZDc1rpPNjlkrow',
             'EDUCACIÓN SECUNDARIA ESPECIALIDAD DE MATEMÁTICA E INFORMÁTICA' => 'https://chat.whatsapp.com/CnrpSPqQfosEBBK8ruaj3A',
             'DERECHO Y CIENCIAS POLÍTICAS' => 'https://chat.whatsapp.com/DiLAf0ITiroAqyvIFJhmj9',
-            'CONTABILIDAD' => 'https://chat.whatsapp.com/tuCodigoDeInvitacion',
+            'CONTABILIDAD' => 'https://chat.whatsapp.com/Contabilidad',
             'ECONOMÍA' => 'https://chat.whatsapp.com/IldE1mwgqit1l9BZGYoCGN',
             'INGENIERÍA CIVIL' => 'https://chat.whatsapp.com/ITucenpwrm9DsbJwJcjpsw',
             'ARQUITECTURA Y URBANISMO' => 'https://chat.whatsapp.com/LMc7Tk1oaubLEXZbTuPDw7',
