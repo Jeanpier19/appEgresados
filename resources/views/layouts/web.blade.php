@@ -91,7 +91,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-7">
-                        <p>© 2024 <span class="template-name">UNASAM</span>. Derechos reservados</p>
+                        <p>© {{ date('Y') }} <span class="template-name">UNASAM</span>. Derechos reservados</p>
                     </div>
                     <div class="col-md-5">
                         <ul class="text-left">
