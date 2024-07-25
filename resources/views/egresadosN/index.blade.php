@@ -457,8 +457,8 @@
                                 <select class="form-control" name="f_ingreso" id="f_ingreso">
                                     <option value="">Seleccionar</option>
                                     @for ($i = date('Y'); $i >= 2000; $i--)
-                                        <option value="{{ $i }}">{{ $i }}-II</option>
-                                        <option value="{{ $i }}">{{ $i }}-I</option>
+                                        <option value="{{ $i }}-II">{{ $i }}-II</option>
+                                        <option value="{{ $i }}-I">{{ $i }}-I</option>
                                     @endfor
                                 </select>
                             </div>
@@ -467,10 +467,10 @@
                                 <select class="form-control" name="f_egreso" id="f_egreso">
                                     <option value="">Seleccionar</option>
                                     @for ($i = date('Y'); $i >= 2000; $i--)
-                                        <option value="{{ $i }}">{{ $i }}-III</option>
-                                        <option value="{{ $i }}">{{ $i }}-II</option>
-                                        <option value="{{ $i }}">{{ $i }}-I</option>
-                                        <option value="{{ $i }}">{{ $i }}-0</option>
+                                        <option value="{{ $i }}-III">{{ $i }}-III</option>
+                                        <option value="{{ $i }}-II">{{ $i }}-II</option>
+                                        <option value="{{ $i }}-I">{{ $i }}-I</option>
+                                        <option value="{{ $i }}-0">{{ $i }}-0</option>
                                     @endfor
                                 </select>
                             </div>
