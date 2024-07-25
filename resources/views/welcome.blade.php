@@ -76,6 +76,9 @@
         .social-bar a i:hover {
             color: #e2197e;
         }
+        .banner {
+            border: 5px solid #fff;
+        }
     </style>
 @endsection
 
@@ -93,7 +96,7 @@
                 <div class="carousel-principal">
                     @forelse ($carousel as $slide)
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="/banner/{{ $slide->imagen }}" class="d-block  border border-white"
+                            <img src="/banner/{{ $slide->imagen }}" class="d-block banner"
                                 style="max-height: 490px; object-fit: contain;" alt="{{ $slide->nombre }}">
                         </div>
                     @empty
