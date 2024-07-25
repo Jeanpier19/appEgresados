@@ -267,11 +267,11 @@
                                                                 <select class="form-control" name="f_egreso"
                                                                     id="f_egreso">
                                                                     @for ($i = date('Y'); $i >= 2000; $i--)
-                                                                        <option value="{{ $i }}-II"
+                                                                        <option value="{{ $egresado->f_egreso }}"
                                                                             {{ $egresado->f_egreso == $i . '-II' ? 'selected' : '' }}>
                                                                             {{ $i }}-II
                                                                         </option>
-                                                                        <option value="{{ $i }}-I"
+                                                                        <option value="{{ $egresado->f_egreso }}"
                                                                             {{ $egresado->f_egreso == $i . '-I' ? 'selected' : '' }}>
                                                                             {{ $i }}-I
                                                                         </option>
@@ -467,8 +467,10 @@
                                 <select class="form-control" name="f_egreso" id="f_egreso">
                                     <option value="">Seleccionar</option>
                                     @for ($i = date('Y'); $i >= 2000; $i--)
+                                        <option value="{{ $i }}">{{ $i }}-III</option>
                                         <option value="{{ $i }}">{{ $i }}-II</option>
                                         <option value="{{ $i }}">{{ $i }}-I</option>
+                                        <option value="{{ $i }}">{{ $i }}-0</option>
                                     @endfor
                                 </select>
                             </div>

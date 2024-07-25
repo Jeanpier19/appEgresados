@@ -48,7 +48,7 @@ class egresadosnController extends Controller
             ->get();
         $ciclos = ['Seleccionar', '1', '2'];
         $genero = ['Seleccionar','MASCULINO', 'FEMENINO'];
-        $tip_doc = ['DNI', 'CARNET DE EXTRANJERIA'];
+        $tip_doc = ['DNI', 'PASAPORTE'];
         $facultades = Facultad::select('id', 'nombre')->get();
         $escuelas = Escuela::select('id', 'nombre')->get();
         $grados = Condicion::select('id', 'descripcion')->get();
