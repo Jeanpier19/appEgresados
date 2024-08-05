@@ -4,6 +4,7 @@ use App\Convenio;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\egresadosnController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,10 +86,10 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 // CRUD EgresadosN:
-Route::group(['middleware' => ['auth']], function () {
-    Route::resource('egresadosn', 'egresadosnController')->names('egresadosn');
+Route::group(['prefix' => 'egresadosn', 'middleware' => ['auth']], function () {
+    Route::resource('/egresadosn', 'egresadosnController');
+    Route::post('/all', 'egresadosnController@getEgresados')->name('egresadosn.getEgresados');
 });
-
 
 // Paginas
 Route::get('/', 'PageController@index')->name('welcome');

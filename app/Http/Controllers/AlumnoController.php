@@ -283,7 +283,6 @@ class AlumnoController extends Controller
                 $data[] = $nestedData;
             }
         }
-        //dd($_temp);
         $json_data = array(
             "draw" => intval($request->input('draw')),
             "recordsTotal" => intval($totalData),
