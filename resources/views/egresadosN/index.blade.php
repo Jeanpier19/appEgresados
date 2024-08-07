@@ -189,6 +189,7 @@
                             <div class="form-group col-md-6">
                                 <label for="ciclo">Ciclo</label>
                                 <select class="form-control" name="ciclo" id="ciclo">
+                                    <option value="">Seleccionar</option>
                                     @foreach ($ciclos as $index => $ciclo)
                                         <option value="{{ $index }}">{{ $ciclo }}</option>
                                     @endforeach

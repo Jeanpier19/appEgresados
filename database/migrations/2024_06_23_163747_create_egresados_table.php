@@ -16,7 +16,7 @@ class CreateEgresadosTable extends Migration
         Schema::create('egresados', function (Blueprint $table) {
             $table->id();
             $table->string('anio')->nullable();
-            $table->enum('ciclo', ['0','1', '2'])->nullable();
+            $table->string('ciclo')->nullable();
             $table->string('codigo_local')->nullable();
             $table->unsignedBigInteger('facultad_id')->nullable();
             $table->unsignedBigInteger('escuela_id')->nullable();
