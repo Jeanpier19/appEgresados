@@ -21,21 +21,21 @@
     <tbody>
         @foreach ($egresados as $index => $egresado)
             <tr>
-                <td style="text-align: center; border: 1px solid black;">{{ $index + 1 }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->anio }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->ciclo }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->codigo_local }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->facultad }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->escuela }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->codigo }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->num_documento }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->paterno }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->materno }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->nombres }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->f_ingreso }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->f_egreso }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->grado_academico }}</td>
-                <td style="text-align: center; border: 1px solid black;">{{ $egresado->sexo }}</td>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $egresado->anio }}</td>
+                <td>{{ $egresado->ciclo }}</td>
+                <td>{{ $egresado->codigo_local }}</td>
+                <td>{{ $egresado->facultad }}</td>
+                <td>{{ $egresado->escuela }}</td>
+                <td>{{ $egresado->codigo }}</td>
+                <td>{{ $egresado->num_documento }}</td>
+                <td>{{ $egresado->paterno }}</td>
+                <td>{{ $egresado->materno }}</td>
+                <td>{{ $egresado->nombres }}</td>
+                <td>{{ $egresado->f_ingreso }}</td>
+                <td>{{ $egresado->f_egreso }}</td>
+                <td>{{ $egresado->grado_academico }}</td>
+                <td>{{ $egresado->sexo }}</td>
             </tr>
         @endforeach
     </tbody>
