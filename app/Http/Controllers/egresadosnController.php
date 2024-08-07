@@ -47,7 +47,7 @@ class egresadosnController extends Controller
                 'egresados.codigo_local'
             )
             ->get();
-        $ciclos = ['Seleccionar', '1', '2', '0'];
+        $ciclos = ['Seleccionar', '0', '1', '2'];
         $genero = ['Seleccionar', 'MASCULINO', 'FEMENINO'];
         $tip_doc = ['DNI', 'PASAPORTE'];
         $facultades = Facultad::select('id', 'nombre')->get();
@@ -160,7 +160,7 @@ class egresadosnController extends Controller
             )
             ->where('egresados.id', $id)
             ->first();
-        $ciclos = ['Seleccionar', '1', '2', '0'];
+        $ciclos = ['Seleccionar', '0', '1', '2'];
         $genero = ['Seleccionar', 'MASCULINO', 'FEMENINO'];
         $tip_doc = ['DNI', 'PASAPORTE'];
         $facultades = Facultad::select('id', 'nombre')->get();
