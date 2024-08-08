@@ -177,7 +177,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="genero">Facultad</label>
-                            <select class="form-control" style="width: 400px" id="facultad_id" name="facultad_id">
+                            <select class="form-control" id="facultad_id" name="facultad_id">
                                 @foreach ($facultades as $facultad)
                                     <option value="{{ $facultad->id }}"
                                         {{ $egresado->facultad_id == $facultad->id ? 'selected' : '' }}>
@@ -186,8 +186,8 @@
                             </select>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="year">Escuela:</label>
-                            <select class="form-control" style="width: 400px" id="escuela_id" name="escuela_id">
+                            <label for="year">Escuela</label>
+                            <select class="form-control" id="escuela_id" name="escuela_id">
                                 @foreach ($escuelas as $escuela)
                                     <option value="{{ $escuela->id }}"
                                         {{ $egresado->escuela_id == $escuela->id ? 'selected' : '' }}>
