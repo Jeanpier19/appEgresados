@@ -11,7 +11,7 @@ use App\Models\Escuela;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
-class egresadosnController extends Controller
+class EgresadosnController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -340,7 +340,6 @@ class egresadosnController extends Controller
             return redirect()->route('egresadosn.index')->with('error', 'Error al actualizar el egresado y el alumno: ' . $e->getMessage());
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
