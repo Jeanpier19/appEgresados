@@ -58,9 +58,25 @@
                 @endif
                 <div class="row">
                     <form id="reporte" method="GET" action="{{ route('export') }}" target="_blank">
-                        <div class="col-xs-12 col-md-3">
+                        <div class="col-xs-12 col-md-2">
                             <strong>Condición:</strong>
                             {{ Form::select('condicion_id', $grados->pluck('descripcion', 'id'), null, ['id' => 'condicion_id', 'class' => 'selectpicker', 'title' => 'Seleccione...', 'data-container' => 'body', 'data-width' => '100%', 'data-live-search' => 'true', 'data-max-options' => '1', 'multiple']) }}
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            <strong>Semestre:</strong>
+                            {{ Form::select(
+                                'semestre_id',
+                                collect(range(date('Y'), 1970))->flatMap(function ($year) {
+                                    return [
+                                        "{$year}-III" => "{$year}-III",
+                                        "{$year}-II" => "{$year}-II",
+                                        "{$year}-I" => "{$year}-I",
+                                        "{$year}-0" => "{$year}-0"
+                                    ];
+                                }),
+                                null,
+                                ['id' => 'semestre_id', 'class' => 'form-control selectpicker', 'title' => 'Seleccione...', 'data-live-search' => 'true', 'data-max-options' => '1', 'multiple']
+                            ) }}
                         </div>
                         <div class="col-xs-12 col-md-3">
                             <strong>Facultad:</strong>
@@ -70,7 +86,7 @@
                             <strong>Escuela:</strong>
                             {{ Form::select('escuela_id', [], null, ['id' => 'escuela_id', 'class' => 'selectpicker', 'title' => 'Seleccione...', 'data-container' => 'body', 'data-width' => '100%', 'data-live-search' => 'true', 'data-max-options' => '1', 'multiple']) }}
                         </div>
-                        <div class="col-xs-12 col-md-3">
+                        <div class="col-xs-12 col-md-2">
                             <div class="form-group">
                                 <strong>Reporte:</strong><br>
                                 <button id="excel" type="button" class="btn btn-success btn-sm"><i
@@ -391,6 +407,7 @@
             filtros();
             reporte();
             seleccionar_facultad();
+            filtro_semestre();
             openTab();
 
             let tabla = $('#table').DataTable({
@@ -424,6 +441,7 @@
                     "type": "POST",
                     "data": function(d) {
                         d._token = "{{ csrf_token() }}";
+                        d.semestre_id = $('#semestre_id').val();
                         d.condicion_id = $('#condicion_id').val();
                         d.facultad_id = $('#facultad_id').val();
                         d.escuela_id = $('#escuela_id').val();
@@ -679,6 +697,12 @@
 
             function filtro_escuela() {
                 $('#escuela_id').on('change', function() {
+                    tabla.ajax.reload();
+                });
+            }
+
+            function filtro_semestre() {
+                $('#semestre_id').on('change', function() {
                     tabla.ajax.reload();
                 });
             }

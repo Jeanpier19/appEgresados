@@ -225,33 +225,7 @@ class egresadosnController extends Controller
             $egresados;
         } else {
             $search = $request->input('search.value');
-            $egresados = Egresados::join('alumno', 'egresados.alumnos_id', '=', 'alumno.id')
-                ->join('facultad', 'egresados.facultad_id', '=', 'facultad.id')
-                ->join('escuela', 'egresados.escuela_id', '=', 'escuela.id')
-                ->join('condicion', 'egresados.grado_academico', '=', 'condicion.id')
-                ->select(
-                    'egresados.id',
-                    'alumno.codigo',
-                    'alumno.num_documento',
-                    DB::raw('CONCAT_WS(" ", alumno.paterno, alumno.materno, alumno.nombres) as nombre_completo'),
-                    DB::raw('UPPER(alumno.sexo) as sexo'),
-                    'egresados.f_egreso',
-                    DB::raw('UPPER(condicion.descripcion) as grado_academico'),
-                    'alumno.paterno',
-                    'alumno.materno',
-                    'alumno.nombres',
-                    'alumno.direccion',
-                    'alumno.correo',
-                    'alumno.telefono',
-                    'alumno.celular',
-                    'egresados.anio',
-                    'egresados.f_ingreso',
-                    'egresados.ciclo',
-                    'egresados.facultad_id',
-                    'egresados.escuela_id',
-                    'egresados.codigo_local'
-                )
-                ->where(function ($q) use ($search) {
+            $egresados = $egresados->where(function ($q) use ($search) {
                     $q->where('alumno.nombres', 'LIKE', "%{$search}%")
                         ->orWhere('alumno.num_documento', 'LIKE', "%{$search}%")
                         ->orWhere('alumno.materno', 'LIKE', "%{$search}%")
@@ -273,6 +247,11 @@ class egresadosnController extends Controller
         // Filtro por escuela
         if (isset($request->escuela_id)) {
             $egresados = $egresados->where('escuela.id', $request->escuela_id);
+        }
+
+        // Filtro por fecha de egreso
+        if (isset($request->semestre_id)) {
+            $egresados = $egresados->where('egresados.f_egreso', $request->input('semestre_id'));
         }
 
         // Filtrado y paginación

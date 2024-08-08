@@ -38,6 +38,10 @@ class EgresadosExport implements FromView, ShouldAutoSize, WithChunkReading, Wit
             $egresados->where('condicion.id', '=', $this->request->condicion_id);
         }
 
+        if ($this->request->has('semestre_id') && $this->request->input('semestre_id') !== '') {
+            $egresados->where('egresados.f_egreso', '=', $this->request->input('semestre_id'));
+        }
+
         return view('egresadosN.export', [
             'egresados' => $egresados->cursor() // Usa cursor() para manejar grandes volúmenes de datos eficientemente
         ]);

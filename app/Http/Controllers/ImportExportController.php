@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Condicion;
+use App\Egresados;
 use Illuminate\Http\Request;
 use App\Exports\EgresadosExport;
 use App\Imports\EgresadosNImport;
@@ -22,6 +23,10 @@ class ImportExportController extends Controller
         if (isset($request->condicion_id)) {
             $condicion = Condicion::find($request->condicion_id);
             $nombre = $nombre . ' - ' . $condicion->descripcion;
+        }
+        if (isset($request->semestre_id)) {
+            $semestre = Egresados::select('f_egreso')->where('f_egreso', '=', $request->input('semestre_id'))->first();
+            $nombre = $nombre . ' - ' . $semestre->f_egreso;
         }
         return Excel::download(new EgresadosExport($request), mb_strtoupper($nombre, 'UTF-8') . '.xlsx');
     }
